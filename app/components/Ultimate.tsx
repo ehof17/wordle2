@@ -1,3 +1,4 @@
+
 import { observer } from "mobx-react-lite";
 import Guess from "./Guess";
 
@@ -14,10 +15,11 @@ const Ultimate = observer(({stores}) => {
                 Play Again Game {index + 1}
               </button>
             )}
+            
             <Guess
             word={store.word}
             guess={store.won ? store.word : store.guesses[store.currentGuess]} 
-            isGuessed={false}/>
+            isGuessed={store.won ? true : false}/>
             
             word: {store.word}
             guesses: {JSON.stringify(store.guesses)}

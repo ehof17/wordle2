@@ -48,14 +48,14 @@ const WordlePage = () => {
     <div>
       <div className='flex items-center justify-evenly'>
         {stores.map((store, index) => (
-          <button className={store.won ? "text-slate-400" : "text-slate-900"} key={index} onClick={() => switchGame(index)}>
+          <button className={store.won ? "text-green-400" : "text-white-900"} key={index} onClick={() => switchGame(index)}>
             Game {index + 1}
           </button>
         ))}
       </div>
 
       <div className='flex items-center justify-evenly'>
-        <Ultimate stores={stores} />
+      <Ultimate stores = {stores}/>
       </div>
       <Wordle store={stores[activeStoreIndex]} />
     </div>
