@@ -1,5 +1,5 @@
 import { get } from "http";
-import words from '../../../words.json';
+import words from '../../words.json';
 import { makeAutoObservable } from "mobx";
 class PuzzleStore {
     word= '';

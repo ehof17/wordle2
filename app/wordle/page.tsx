@@ -5,9 +5,10 @@ import {usePathname} from 'next/navigation';
 
 import React, { useEffect, useState } from "react";
 import Wordle from "../components/Wordle";
-import { useLocalObservable } from "mobx-react-lite";
+import { useLocalObservable, useObserver } from "mobx-react-lite";
 import PuzzleStore from "../stores/PuzzleStore";
 import exp from 'constants';
+import Ultimate from '../components/Ultimate';
 
 
 
@@ -43,21 +44,22 @@ const WordlePage = () => {
     setActiveStoreIndex(index);
   };
 
-  return (
+  return useObserver(() => (
     <div>
       <div className='flex items-center justify-evenly'>
         {stores.map((store, index) => (
-          <button className = {store.won? "text-slate-400":"text-slate-900"} key={index} onClick={() => switchGame(index)}>
+          <button className={store.won ? "text-slate-400" : "text-slate-900"} key={index} onClick={() => switchGame(index)}>
             Game {index + 1}
           </button>
         ))}
       </div>
+
       <div className='flex items-center justify-evenly'>
-        Ultimate Game
+        <Ultimate stores={stores} />
       </div>
       <Wordle store={stores[activeStoreIndex]} />
     </div>
-  );
+  ));
 };
 export default WordlePage;
   
