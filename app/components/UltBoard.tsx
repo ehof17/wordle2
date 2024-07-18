@@ -9,6 +9,7 @@ const UltimateBoard = observer(({store}) => {
         <h1 className="text-6xl font-bold uppercase text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-green-400">Ultimate Wordle</h1>
         {store.words.map((row, index) => {
         const preLength = store.startingIndexes[index];
+        let selected = store.selected == index
         const postLength = 13 - (preLength + 5);
         return (
             <div key={index}>
@@ -26,7 +27,7 @@ const UltimateBoard = observer(({store}) => {
                     
                     {new Array(5).fill(0).map((_, i) => {
                         const guessValue = (row && row[i]) || "";
-                        const bgColor = guessValue == "" ? "bg-black" : "bg-green-400";
+                        const bgColor = selected ? "bg-orange-400" : "bg-green-400";
 
                         return (
                             <div key={i} className={`h-8 w-8 border border-gray-400 text-white font-bold uppercase flex items-center justify-center ${bgColor}`}>

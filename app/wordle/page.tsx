@@ -25,6 +25,7 @@ const WordlePage = () => {
     new PuzzleStore()
   ]);
   const UltStory = useLocalObservable(() => new UltStore());
+  UltStory.init();
   useEffect(() => {
     stores.forEach(store => store.init());
   }, []);
@@ -32,7 +33,7 @@ const WordlePage = () => {
     
 
     const handleKeyUp = (e) => {
-      stores[activeStoreIndex].handleKeyUp(e);
+      UltStory.handleKeyUp(e);
     };
 
     window.addEventListener('keyup', handleKeyUp);

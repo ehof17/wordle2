@@ -6,6 +6,7 @@ class UltStore {
     guesses= [];
     currentGuess= 0;
     words=[];
+    selected = 0;
     selectedIndexes = [0, 0, 0, 0, 0];
     startingIndexes = [4, 4, 4, 4, 4];
     
@@ -57,10 +58,23 @@ class UltStore {
     }
     moveSelection(direction){
         if (direction === 'left'){
-            this.currentGuess = Math.max(0, this.currentGuess - 1);
+            const prevLoc = this.startingIndexes[this.selected];
+            if (prevLoc === 0){
+                this.startingIndexes[this.selected] =8;
+            }
+            else{
+                this.startingIndexes[this.selected] -=1;
+            }
+            
         }
         if (direction === 'right'){
-            this.currentGuess = Math.min(5, this.currentGuess + 1);
+            const prevLoc = this.startingIndexes[this.selected];
+            if(prevLoc === 8){
+                this.startingIndexes[this.selected] =0;
+            }
+            else{
+            this.startingIndexes[this.selected] +=1;
+            }
         }
     }
     submitGuess(){
@@ -74,11 +88,14 @@ class UltStore {
         if (this.won || this.lost){
         return;
     }
-        if (e.key === 'ArrowDown'){
+        if (e.key === 'ArrowLeft'){
             return this.moveSelection('left');
         }
-        if (e.key === 'ArrowUp'){
+        if (e.key === 'ArrowRight'){
             return this.moveSelection('right');
+        }
+        if (e.key === 'ArrowDown'){
+            console.log('FOR THE LOVE OF GAWD JUST GO DOWN')
         }
         if (e.key === 'Backspace'){
             this.guesses[this.currentGuess] = this.guesses[this.currentGuess].slice(
