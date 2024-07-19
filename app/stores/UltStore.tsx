@@ -56,6 +56,34 @@ class UltStore {
      
         
     }
+    // swap the values at the selected index and the index passed in
+    swap(index){
+        const temp = this.words[this.selected]
+        console.log(this.words[this.selected], this.words[index])
+        console.log(this.selected, index)
+        this.words[this.selected] = this.words[index];
+        this.words[index] = temp;
+
+    }
+    changeSelected(direction){
+        if(direction == 'up'){
+            if(this.selected == 0){
+                this.selected = 4;
+            }
+            else{
+                this.selected--;
+            }
+        }
+        if(direction == 'down'){
+            if (this.selected == 4){
+                this.selected = 0
+            }
+            else{
+                this.selected++;
+            
+            }
+        }
+    }
     moveSelection(direction){
         if (direction === 'left'){
             const prevLoc = this.startingIndexes[this.selected];
@@ -85,9 +113,7 @@ class UltStore {
     }
     handleKeyUp(e){
         console.log(this.word, this.guesses, this.currentGuess, e.key);
-        if (this.won || this.lost){
-        return;
-    }
+       
         if (e.key === 'ArrowLeft'){
             return this.moveSelection('left');
         }
@@ -95,18 +121,17 @@ class UltStore {
             return this.moveSelection('right');
         }
         if (e.key === 'ArrowDown'){
-            console.log('FOR THE LOVE OF GAWD JUST GO DOWN')
+            return this.changeSelected('down');
         }
+        if (e.key === 'ArrowUp'){
+            return this.changeSelected('up');
+        }
+
         if (e.key === 'Backspace'){
-            this.guesses[this.currentGuess] = this.guesses[this.currentGuess].slice(
-              0,
-              this.guesses[this.currentGuess].length - 1
-            );
-            return;
+            console.log('aaayy')
+           return this.swap(0)
         }
-        if (this.guesses[this.currentGuess].length < 5 && e.key.match(/^[A-z]$/)){
-            this.guesses[this.currentGuess] += e.key.toLowerCase();
-        }
+       
         
 
     }
