@@ -25,9 +25,13 @@ const WordlePage = () => {
     new PuzzleStore()
   ]);
   const UltStory = useLocalObservable(() => new UltStore());
-  UltStory.init();
+ 
   useEffect(() => {
+    UltStory.init();
     stores.forEach(store => store.init());
+    stores.map((store, index) => {
+      UltStory.words[index] = store.word;
+    })
   }, []);
   useEffect(() => {
     
@@ -51,7 +55,7 @@ const WordlePage = () => {
     <div>
       <div className='flex items-center justify-evenly'>
         {stores.map((store, index) => (
-          UltStory.words[index] = store.word,
+          
           <button className={store.won ? "text-green-400" : "text-white-900"} key={index} onClick={() => switchGame(index)}>
             Game {index + 1}
           </button>
