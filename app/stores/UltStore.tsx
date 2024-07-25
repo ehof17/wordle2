@@ -244,7 +244,7 @@ checkForYellow(){
     this.redIDX = [];
     this.yellowIDX = [];
     this.orangeIDX = [];
-    for (let i = 0; i < 5; i++){
+    for (let i = 0; i < this.letterLength; i++){
         const letterToCheck = this.words[0][i];
         const trueIndex = i + this.startingIndexes[0];
         const solutionsThatStartWithIt = this.solutions.filter(word => new RegExp(`^${letterToCheck}`, 'i').test(word));
@@ -314,15 +314,23 @@ yellowHelper(possibleNextLetters, letterToCheck, trueIndex, startingIndex, wordI
     return [];
 }
 submitCol(){
+    console.log('please')
     if (this.redIDX.length < this.letterLength){
         return;
     }
     const wordsCopy = this.words.map(innerArray => [...innerArray]);
     const  redIDXCopy =[...this.redIDX];
+    console.log('help me')
     for (let [row, col] of redIDXCopy){
-        wordsCopy[row][col] = '';
+        console.log(`Row ${row} and col ${col}`)
+        console.log(`At row ${row} have to move  ${col-(this.letterLength-1)} letters back`)
+        for (let i = 0; i < -(col-(this.letterLength-1)); i++){
+            wordsCopy[row][col-i] = wordsCopy[row][col-i-1];
+        }
+        
     }
     this.words = wordsCopy;
+    this.letterLength--;
 }
     findSolution2(){
         // Initialize the trie and insert all words
