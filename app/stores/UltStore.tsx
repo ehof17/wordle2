@@ -324,9 +324,7 @@ submitCol(){
     for (let [row, col] of redIDXCopy){
         console.log(`Row ${row} and col ${col}`)
         console.log(`At row ${row} have to move  ${col-(this.letterLength-1)} letters back`)
-        for (let i = 0; i < -(col-(this.letterLength-1)); i++){
-            wordsCopy[row][col-i] = wordsCopy[row][col-i-1];
-        }
+        
         
     }
     this.words = wordsCopy;
