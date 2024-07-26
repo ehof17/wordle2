@@ -29,7 +29,7 @@ const UltimateBoard = observer(({store}) => {
                         );
                     })}
                     
-                    {new Array(5).fill(0).map((_, i) => {
+                    {new Array(store.letterLength).fill(0).map((_, i) => {
                         const guessValue = (row && row[i]) || "";
                         
                     

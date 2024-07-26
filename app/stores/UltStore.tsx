@@ -323,7 +323,16 @@ submitCol(){
     console.log('help me')
     for (let [row, col] of redIDXCopy){
         console.log(`Row ${row} and col ${col}`)
-        console.log(`At row ${row} have to move  ${col-(this.letterLength-1)} letters back`)
+        const numsToMove = -(col-(this.letterLength-1))
+        const preNumsToKeep = this.words[row].slice(0, this.letterLength - numsToMove-1);
+        const numsToMoveBack = this.words[row].slice(this.letterLength - numsToMove);
+        wordsCopy[row] = preNumsToKeep.concat(numsToMoveBack);
+        
+        console.log(`Pre nums to keep ${preNumsToKeep}`)
+        console.log(`Nums to move back ${numsToMoveBack}`)
+        console.log(`At row ${row} have to move  ${numsToMove} letters back`)
+        console.log(`Are we going to even touch the first ${this.letterLength - numsToMove-1}`)
+        console.log(`Should we start at index  ${this.letterLength - numsToMove}}`)
         
         
     }
