@@ -55,6 +55,15 @@ class UltStore {
     redIDX = [[-1,-1]]
     orangeIDX = [[-1,-1]]
     letterLength = 5
+    wordsGrid: string[][] = [
+        ["","","","","a1", "a2", "a3", "a4", "a5","","","",""],
+        ["","","","","b1", "b2", "b3", "b4", "b5","","","",""],
+        ["","","","","c1", "c2", "c3", "c4", "c5","","","",""],
+        ["","","","","d1", "d2", "d3", "d4", "d5","","","",""],
+        ["","","","","e1", "e2", "e3", "e4", "e5","","","",""]
+      ];
+
+
     
    constructor() {
         makeAutoObservable(this);
@@ -114,6 +123,15 @@ class UltStore {
             else{
                 this.selected--;
             }
+            for (let col = 0; col < this.wordsGrid[0].length; col++) {
+                for (let row = 0; row < this.wordsGrid.length - 1; row++) {
+                  if (this.wordsGrid[row][col] === '' && this.wordsGrid[row + 1][col] !== '') {
+                    this.wordsGrid[row][col] = this.wordsGrid[row + 1][col];
+                    this.wordsGrid[row + 1][col] = '';
+                  }
+                }
+              }
+
         }
         if(direction == 'down'){
             if (this.selected == 4){
@@ -123,18 +141,31 @@ class UltStore {
                 this.selected++;
             
             }
+            for (let col = 0; col < this.wordsGrid[0].length; col++) {
+                for (let row = this.wordsGrid.length - 1; row > 0; row--) {
+                  if (this.wordsGrid[row][col] === '' && this.wordsGrid[row - 1][col] !== '') {
+                    this.wordsGrid[row][col] = this.wordsGrid[row - 1][col];
+                    this.wordsGrid[row - 1][col] = '';
+                  }
+                }
+              }
         }
         this.checkForYellow()
     }
     moveSelection(direction){
         if (direction === 'left'){
             const prevLoc = this.startingIndexes[this.selected];
+            
             if (prevLoc === 0){
                 this.startingIndexes[this.selected] =8;
             }
             else{
                 this.startingIndexes[this.selected] -=1;
             }
+            const row = this.wordsGrid[this.selected];
+            const firstElement = row.shift();
+            row.push(firstElement || '');
+            this.wordsGrid[this.selected] = row;
             
         }
         if (direction === 'right'){
@@ -145,6 +176,10 @@ class UltStore {
             else{
             this.startingIndexes[this.selected] +=1;
             }
+            const row = this.wordsGrid[this.selected];
+            const lastElement = row.pop();
+            row.unshift(lastElement || '');
+            this.wordsGrid[this.selected] = row;
         }
         this.checkForYellow()
     }
@@ -177,10 +212,7 @@ class UltStore {
         if (e.key === 'Enter'){
             return this.checkForYellow();
         }
-        if (e.key == 'h'){
-            return this.swap(1);
-        }
-      
+   
        
         
 
@@ -328,16 +360,14 @@ submitCol(){
         const numsToMoveBack = this.words[row].slice(this.letterLength - numsToMove);
         wordsCopy[row] = preNumsToKeep.concat(numsToMoveBack);
         
-        console.log(`Pre nums to keep ${preNumsToKeep}`)
-        console.log(`Nums to move back ${numsToMoveBack}`)
-        console.log(`At row ${row} have to move  ${numsToMove} letters back`)
-        console.log(`Are we going to even touch the first ${this.letterLength - numsToMove-1}`)
-        console.log(`Should we start at index  ${this.letterLength - numsToMove}}`)
         
         
     }
+    
     this.words = wordsCopy;
     this.letterLength--;
+    this.checkForYellow();
+    
 }
     findSolution2(){
         // Initialize the trie and insert all words
