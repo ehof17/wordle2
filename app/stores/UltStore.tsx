@@ -1,44 +1,125 @@
 
 import { act } from 'react';
 import words from '../../words.json';
-import { makeAutoObservable, action } from "mobx";
+import { makeAutoObservable, action, toJS } from "mobx";
 import { match } from 'assert';
 import next from 'next';
 class TrieNode {
     children: {};
-    isEndOfWord: boolean;
+    isWord: boolean;
+    refs: number;
     constructor() {
         this.children = {};
-        this.isEndOfWord = false;
+        this.isWord = false;
+        this.refs = 0;
+    }
+
+    /**
+     * @param {string} word
+     */
+    addWord(word) {
+        let cur = this;
+        cur.refs++;
+        for (const c of word) {
+            if (!cur.children[c]) {
+                cur.children[c] = new TrieNode();
+            }
+            cur = cur.children[c];
+            cur.refs++;
+        }
+        cur.isWord = true;
+    }
+
+    /**
+     * @param {string} word
+     */
+    removeWord(word) {
+        let cur = this;
+        cur.refs--;
+        for (const c of word) {
+            if (cur.children[c]) {
+                cur = cur.children[c];
+                cur.refs--;
+            }
+        }
     }
 }
-
-class Trie {
-    root: TrieNode;
+class Solution {
+    ROWS: number;
+    COLS: number;
     constructor() {
-        this.root = new TrieNode();
+        this.ROWS = 0;
+        this.COLS = 0;
     }
 
-    insert(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                node.children[char] = new TrieNode();
-            }
-            node = node.children[char];
+    /**
+     * @param {character[][]} board
+     * @param {string[]} words
+     * @return {string[]}
+     */
+    findWords(board, words) {
+        const res = new Map();
+        const visit = new Set();
+        const root = new TrieNode();
+    
+        for (const w of words) {
+            root.addWord(w);
         }
-        node.isEndOfWord = true;
+    
+        this.ROWS = board.length;
+        this.COLS = board[0].length;
+    
+        for (let r = 0; r < this.ROWS; r++) {
+            for (let c = 0; c < this.COLS; c++) {
+                this.dfs(r, c, root, '', board, res, visit, root, []);
+            }
+        }
+    
+        return Array.from(res.entries());
     }
-
-    search(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
+    
+    /**
+     * @param {number} r
+     * @param {number} c
+     * @param {TrieNode} node
+     * @param {string} word
+     * @param {character[][]} board
+     * @param {Map<string, Array<[number, number]>>} res
+     * @param {Set<string>} visit
+     * @param {TrieNode} root
+     * @param {Array<[number, number]>} positions
+     */
+    dfs(r, c, node, word, board, res, visit, root, positions) {
+        if (
+            r < 0 ||
+            r >= this.ROWS ||
+            c < 0 ||
+            c >= this.COLS ||
+            !node.children[board[r][c]] ||
+            node.children[board[r][c]].refs < 1 ||
+            visit.has(r + ',' + c)
+        ) {
+            return;
         }
-        return node.isEndOfWord;
+    
+        visit.add(r + ',' + c);
+        node = node.children[board[r][c]];
+        word += board[r][c];
+        positions.push([r, c]);
+    
+        if (node.isWord) {
+            node.isWord = false;
+            res.set(word, [...positions]);
+            root.removeWord(word);
+        }
+    
+        this.dfs(r + 1, c, node, word, board, res, visit, root, positions);
+        this.dfs(r - 1, c, node, word, board, res, visit, root, positions);
+        this.dfs(r, c + 1, node, word, board, res, visit, root, positions);
+        this.dfs(r, c - 1, node, word, board, res, visit, root, positions);
+    
+        visit.delete(r + ',' + c);
+        positions.pop();
     }
 }
 class UltStore {
@@ -53,27 +134,35 @@ class UltStore {
     selectedIndexes = [0, 0, 0, 0, 0];
     startingIndexes = [4, 4, 4, 4, 4];
     yellowIDX = [[-1,-1]]
+    lightningIDX = []
+    clickedIndexes = []
     redIDX = [[-1,-1]]
     orangeIDX = [[-1,-1]]
     letterLength = 5
-    threeLetterWordsIndexes: number[][][] = [];
+    threeLetterWordsIndexes= [[-1,-1]]
     fourLetterWordsIndexes = [[-1,-1]]
     fiveLetterWordsIndexes = [[-1,-1]]
+    lightingWord = '';
+    sol = new Solution();
+    score = 0;
+    yellow2IDX = [[-1,-1]];
     wordsGrid: string[][] = [
-        ["","","","","a1", "a2", "a3", "a4", "a5","","","",""],
-        ["","","","","b1", "b2", "b3", "b4", "b5","","","",""],
-        ["","","","","c1", "c2", "c3", "c4", "c5","","","",""],
-        ["","","","","d1", "d2", "d3", "d4", "d5","","","",""],
-        ["","","","","e1", "e2", "e3", "e4", "e5","","","",""]
+        ["","","","","t", "r", "i", "a", "d","","","",""],
+        ["","","","","p", "l", "e", "b", "e","","","",""],
+        ["","","","","f", "o", "x", "e", "s","","","",""],
+        ["","","","","a", "u", "g", "h", "t","","","",""],
+        ["","","","","t", "a", "s", "t", "e","","","",""]
       ];
       allWords = words;
+    lightningEnabled = true;
+    lightningOn = false;
 
 
     
    constructor() {
         makeAutoObservable(this);
         this.handleKeyUp = this.handleKeyUp.bind(this);
-       
+    
     }
 
 
@@ -110,53 +199,47 @@ class UltStore {
     }
 
 
-    isSafe(row, col, visited){
-        return (row >=0 && row < this.wordsGrid.length && col >=0 && col < this.wordsGrid[0].length && !visited[row][col]);
+
+    isSafe(row: number, col: number, visited: boolean[][]): boolean {
+        return (row >= 0 && row < this.wordsGrid.length && col >= 0 && col < this.wordsGrid[0].length && !visited[row][col]);
     }
-searchWord(row, col, visited, str,indexes: number[][]){
-let x = [-1, -1, -1,  0, 0,  1, 1, 1];
-let y = [-1,  0,  1, -1, 1, -1, 0, 1];
-visited[row][col] = true;
-  str = str + this.wordsGrid[row][col];
-  indexes.push([row, col]);
-  // If str is present in dictionary, then print it
-if (this.allWords.includes(str)) {
-    console.log(str);
-    if (str.length === 3) {
-        this.threeLetterWordsIndexes.push([...indexes]);
-    } else if (str.length === 4) {
-        this.fourLetterWordsIndexes.push([indexes]);
-    } else if (str.length === 5) {
-        this.fiveLetterWordsIndexes.push([indexes]);
-    }
-}
 
-  // Traverse 8 adjacent cells of wordsGrid[row][col]
-  for (let dir = 0; dir < 8; dir++) {
-    if (this.isSafe(row + x[dir], col + y[dir], visited)) {
-      this.searchWord(row + x[dir], col + y[dir], visited, str);
-    }
-  }
+    searchWord(row: number, col: number, visited: boolean[][], str: string, indexes: number[][]) {
+        let x = [-1, -1, -1, 0, 0, 1, 1, 1];
+        let y = [-1, 0, 1, -1, 1, -1, 0, 1];
+        visited[row][col] = true;
+        str = str + this.wordsGrid[row][col];
+        indexes.push([row, col]);
 
-  // Erase current character from string and mark visited of current cell as false
-  str = str.slice(0, -1);
-  visited[row][col] = false;
-}
-    lookWords(){
-
-        let visited = Array(this.wordsGrid.length).fill(false).map(() => Array(this.wordsGrid[0].length).fill(false));
-
-        // Initialize current string
-        let str = '';
-      
-        // Consider every character and look for all words starting with this character
-        for (let row = 0; row < this.wordsGrid.length; row++) {
-          for (let col = 0; col < this.wordsGrid[0].length; col++) {
-            this.searchWord(row, col, visited, str);
-          }
+        if (this.trie.search(str)) {
+            console.log(str);
         }
-      }
 
+        if (this.trie.startsWith(str)) {
+            for (let dir = 0; dir < 8; dir++) {
+                let newRow = row + x[dir];
+                let newCol = col + y[dir];
+                if (this.isSafe(newRow, newCol, visited)) {
+                    this.searchWord(newRow, newCol, visited, str, indexes);
+                }
+            }
+        }
+
+        str = str.slice(0, -1);
+        indexes.pop();
+        visited[row][col] = false;
+    }
+
+    lookWords() {
+        let visited = Array(this.wordsGrid.length).fill(false).map(() => Array(this.wordsGrid[0].length).fill(false));
+        let str = '';
+        let indexes: number[][] = [];
+        for (let row = 0; row < this.wordsGrid.length; row++) {
+            for (let col = 0; col < this.wordsGrid[0].length; col++) {
+                this.searchWord(row, col, visited, str, indexes);
+            }
+        }
+    }
     init(){
         this.word = words[Math.floor(Math.random() * words.length)];
         this.guesses = new Array(6).fill('');
@@ -253,6 +336,67 @@ if (this.allWords.includes(str)) {
         }
        
     }
+    tryAddLightning(index: number[]) {
+        // Check if lightning is enabled
+        if (!this.lightningEnabled) {
+            console.log('lightning is not enabled');
+            return;
+        }
+    
+        if (!Array.isArray(this.lightningIDX)) {
+            console.error('lightningIDX is not an array');
+            return;
+        }
+        
+        const letter = this.wordsGrid[index[0]][index[1]];
+        
+        // Find the index in the lightningIDX array
+        const existingIndex = this.lightningIDX.findIndex(
+            (idx) => idx[0] === index[0] && idx[1] === index[1]
+        );
+        
+        if (existingIndex !== -1) {
+            // If the index exists, check if it is the first or last index
+            if (existingIndex === 0 || existingIndex === this.lightningIDX.length - 1) {
+                // Remove the index if it is the first or last
+                this.lightningIDX.splice(existingIndex, 1);
+                this.clickedIndexes.splice(existingIndex, 1);
+                
+                console.log('Removed index:', index);
+        
+                // Remove the letter from this.lightingWord
+                const letterIndex = this.lightingWord.indexOf(letter);
+                if (letterIndex !== -1) {
+                    this.lightingWord = this.lightingWord.slice(0, letterIndex) + this.lightingWord.slice(letterIndex + 1);
+                }
+            } else {
+                console.log('Only the first or last index can be removed:', index);
+            }
+        } else {
+            // Check if the new index is within one move of the last index added
+            const lastIndex = this.lightningIDX[this.lightningIDX.length - 1];
+            if (
+                !lastIndex ||
+                (Math.abs(lastIndex[0] - index[0]) <= 1 && Math.abs(lastIndex[1] - index[1]) <= 1)
+            ) {
+                // If the index does not exist and is within one move, add it
+                this.lightningIDX.push(index);
+                this.clickedIndexes.push(index);
+                console.log('Added index:', index);
+        
+                // Add the letter to this.lightingWord
+                this.lightingWord += letter;
+            }
+            else {
+                console.log('Index is not within one move of the last index added:', index);
+            }
+        }
+        
+        // Log the updated lightningIDX array
+        console.log(this.wordsGrid[index[0]][index[1]]);
+        console.log(this.lightningIDX);
+        console.log('Updated lightingWord:', this.lightingWord)
+    }
     handleKeyUp(e){
         console.log(this.word, this.guesses, this.currentGuess, e.key);
        
@@ -269,20 +413,81 @@ if (this.allWords.includes(str)) {
             return this.changeSelected('up');
         }
         if(e.key == 'Enter'){
-            return this.lookWords();
+            console.log('enter the fragon')
+            let splitGrid = this.wordsGrid.map(row => row.slice(4, 9));
+            splitGrid = this.wordsGrid
+            let wordsWithPositions = this.sol.findWords(splitGrid, this.allWords)
+            .filter(([word, positions]) => !this.words.includes(word));
+            console.log(wordsWithPositions)
+            
         }
 
         if (e.key === 'Backspace'){
-            console.log('aaayy')
            return this.findSolution();
         }
-        if (e.key === 'Enter'){
-            return this.checkForYellow();
-        }
+        
    
        
         
 
+    }
+    calculateWordScore(word: string): number {
+
+        const letterScores = {
+            'A': 1, 'B': 3, 'C': 3, 'D': 2, 'E': 1,
+            'F': 4, 'G': 2, 'H': 4, 'I': 1, 'J': 8,
+            'K': 5, 'L': 1, 'M': 3, 'N': 1, 'O': 1,
+            'P': 3, 'Q': 10, 'R': 1, 'S': 1, 'T': 1,
+            'U': 1, 'V': 4, 'W': 4, 'X': 8, 'Y': 4,
+            'Z': 10
+        };
+        let score = 0;
+        for (let letter of word.toUpperCase()) {
+            score += letterScores[letter] || 0; // Add the score of the letter, default to 0 if not found
+        }
+        return score;
+    }
+    trySubmitLightning(){
+        if (!this.words.includes(this.lightingWord) && this.allWords.includes(this.lightingWord)){
+            console.log('we have a winner')
+            const score = this.calculateWordScore(this.lightingWord);
+            this.score+=score;
+            this.lightingWord = '';
+            for (let [row, col] of this.lightningIDX){
+                this.wordsGrid[row][col] = '';
+            }
+            this.lightningIDX = [];
+        }
+        
+    }
+    trySubmitLightning3(){
+        if (this.allWords.includes(this.lightingWord)){
+            console.log('we have a winner')
+            const score = this.calculateWordScore(this.lightingWord);
+            this.score+=score;
+            this.lightingWord = '';
+            for (let [row, col] of this.lightningIDX){
+                this.wordsGrid[row][col] = '';
+            }
+            this.lightningIDX = [];
+        }
+        else{
+            let yellow2 = [];
+            let wordsWithPositions = this.sol.findWords(this.wordsGrid, this.allWords)
+            .filter(([word, positions]) => !this.words.includes(word));
+            for (const [word, positions] of wordsWithPositions) {
+                console.log(`Word: ${word}`);
+                console.log('Positions:');
+                for (const [row, col] of positions) {
+                    if (this.lightningIDX.some(([lightningRow, lightningCol]) => lightningRow === row && lightningCol === col)) {
+                        yellow2.push([row, col]);
+                    }
+                }
+            }
+            this.lightningIDX = [];
+            this.yellow2IDX = yellow2;
+
+        }
     }
     findSolution(){
         this.solution = '?';
@@ -396,12 +601,12 @@ yellowHelper(possibleNextLetters, letterToCheck, trueIndex, startingIndex, wordI
                 const returnedIndexes = this.yellowHelper(possibleNextLetters2, `${letterToCheck}${letterToCheck2}`, trueIndex2, startingIndex, wordIndex + 1, matchedIndexes);
                 matchedIndexes = Array.from(new Set(matchedIndexes.concat(returnedIndexes)));
             }
-            else if (matchedIndexes.length ===this.letterLength-2){
+            else if (matchedIndexes.length ===3){
                 console.log(`We have a yellow match ${matchedIndexes}`)
                 const prevYellow = this.yellowIDX;
                 this.yellowIDX = Array.from(new Set(matchedIndexes.concat(prevYellow)));
             }
-            else if (matchedIndexes.length ===this.letterLength-1){
+            else if (matchedIndexes.length ===4){
                 console.log(`We ave a yellow match ${matchedIndexes}`)
                 const prevOrange = this.orangeIDX;
                 this.orangeIDX = Array.from(new Set(matchedIndexes.concat(prevOrange)));
@@ -430,27 +635,14 @@ submitCol(){
         
         
     }
-    
+    this.lightningEnabled = true;
     this.words = wordsCopy;
     this.letterLength--;
     this.checkForYellow();
     this.findSolution();
     
 }
-    findSolution2(){
-        // Initialize the trie and insert all words
-        const trie = new Trie();
-        for (let word of this.words) {
-            trie.insert(word);
-        }
-    
-        // Check each word in your list
-        for (let word of this.words) {
-            if (trie.search(word)) {
-                console.log(`Found word: ${word}`);
-            }
-        }
-    }
+   
     swap(index){
        
         const selectedIndex = this.selected;

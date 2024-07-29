@@ -6,6 +6,9 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --mouse-x: 0px;
+  --mouse-y: 0px;
+  --circle-size: 15px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -13,8 +16,11 @@
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
+
   }
 }
+
+
 
 body {
   color: rgb(var(--foreground-rgb));
@@ -30,4 +36,65 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+.mouse-follow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  width: var(--circle-size);
+  height: var(--circle-size);
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  transition: backdrop-filter 0.3s ease, height 0.3s ease, width 0.3s ease;
+  mix-blend-mode: screen;
+  background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, rgba(0,0,255,0.5) 50%, rgba(0,0,0,0) 100%);
+  box-shadow: 0 0 20px rgba(0,0,255,0.5), 0 0 40px rgba(0,0,255,0.3), 0 0 60px rgba(0,0,255,0.2);
+  transform: translate(calc(var(--mouse-x) - 50%), calc(var(--mouse-y) - 50%))
+}
+
+@keyframes plasma-animation {
+  0% {
+    transform: translate(calc(var(--mouse-x) - 50%), calc(var(--mouse-y) - 50%));
+    box-shadow: 0 0 20px rgba(0,0,255,0.5), 0 0 40px rgba(0,0,255,0.3), 0 0 60px rgba(0,0,255,0.2);
+  }
+  50% {
+    transform: translate(calc(var(--mouse-x) - 50%), calc(var(--mouse-y) - 50%)) ;
+    box-shadow: 0 0 30px rgba(0,0,255,0.7), 0 0 50px rgba(0,0,255,0.5), 0 0 70px rgba(0,0,255,0.3);
+  }
+  100% {
+    transform: translate(calc(var(--mouse-x) - 50%), calc(var(--mouse-y) - 50%));
+    box-shadow: 0 0 20px rgba(0,0,255,0.5), 0 0 40px rgba(0,0,255,0.3), 0 0 60px rgba(0,0,255,0.2);
+  }
+}
+
+.mouse-follow.lightning {
+  background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, rgba(255,255,0,0.5) 50%, rgba(0,0,0,0) 100%);
+  box-shadow: 0 0 20px rgba(255,255,0,0.5), 0 0 40px rgba(255,255,0,0.3), 0 0 60px rgba(255,255,0,0.2);
+
+}
+
+@keyframes lightning-animation {
+  0% {
+    transform: translate(calc(var(--mouse-x) - 50%), calc(var(--mouse-y) - 50%)) scale(1);
+    box-shadow: 0 0 20px rgba(255,255,0,0.5), 0 0 calc(var(--circle-size)-10) rgba(255,255,0,0.3), 0 0 calc(var(--circle-size)+10) rgba(255,255,0,0.2);
+  }
+  50% {
+    transform: translate(calc(var(--mouse-x) - 50%), calc(var(--mouse-y) - 50%)) scale(1.2);
+    box-shadow: 0 0 30px rgba(255,255,0,0.7), 0 0 var(--circle-size) rgba(255,255,0,0.5), 0 0 calc(var(--circle-size)+20) rgba(255,255,0,0.3);
+  }
+  100% {
+    transform: translate(calc(var(--mouse-x) - 50%), calc(var(--mouse-y) - 50%)) scale(1);
+    box-shadow: 0 0 20px rgba(255,255,0,0.5), 0 0 calc(var(--circle-size)-10) rgba(255,255,0,0.3), 0 0 calc(var(--circle-size)+10) rgba(255,255,0,0.2);
+  }
+}
+
+.lens-blur {
+  backdrop-filter: blur(1rem);
+}
+
+.lens-inverse {
+  backdrop-filter: invert(1);
+
 }

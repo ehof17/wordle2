@@ -2,18 +2,12 @@
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 
-
 import React, { useEffect, useState } from "react";
 import Wordle from "../components/Wordle";
-import { useLocalObservable, useObserver } from "mobx-react-lite";
+import { useLocalObservable, Observer } from "mobx-react-lite";
 import PuzzleStore from "../stores/PuzzleStore";
-import exp from 'constants';
-import Ultimate from '../components/Ultimate';
-import UltStore from "../stores/UltStore";
 import UltimateBoard from '../components/UltBoard';
-
-
-
+import UltStore from "../stores/UltStore";
 
 const WordlePage = () => {
   const [activeStoreIndex, setActiveStoreIndex] = useState(0);
@@ -25,17 +19,17 @@ const WordlePage = () => {
     new PuzzleStore()
   ]);
   const UltStory = useLocalObservable(() => new UltStore());
- 
+
   useEffect(() => {
     UltStory.init();
     stores.forEach(store => store.init());
     stores.map((store, index) => {
       UltStory.words[index] = store.word;
-    })
+      UltStory.wordsGrid[index] = Array(4).fill("").concat(store.word.split(''), Array(4).fill(""));
+    });
   }, []);
-  useEffect(() => {
-    
 
+  useEffect(() => {
     const handleKeyUp = (e) => {
       UltStory.handleKeyUp(e);
     };
@@ -47,37 +41,44 @@ const WordlePage = () => {
     };
   }, [activeStoreIndex, stores]);
 
-   const switchGame = (index) => {
+  const switchGame = (index) => {
     setActiveStoreIndex(index);
   };
 
-  return useObserver(() => (
-    <div>
-      <div className='flex items-center justify-evenly'>
-        {stores.map((store, index) => (
-          
-          <button className={store.won ? "text-green-400" : "text-white-900"} key={index} onClick={() => switchGame(index)}>
-            Game {index + 1}
-          </button>
-        ))}
-      </div>
-      <div className='flex items-center justify-evenly'>
-        {UltStory.words.map((store, index) => (
-          <button className={store.won ? "text-green-400" : "text-white-900"} key={index} onClick={() => switchGame(index)}>
-            {store}
-          </button>
-         
-        ))}
-      </div>
-
-      
-      <Wordle store={stores[activeStoreIndex]} />
-      <div className='flex items-center justify-evenly'>
-   
-      <UltimateBoard store = {UltStory}/>
-      </div>
-    </div>
-  ));
+  return (
+    <Observer>
+      {() => (
+        <div>
+          <div className='flex items-center justify-evenly'>
+            {stores.map((store, index) => (
+              <button
+                className={store.won ? "text-green-400" : "text-white-900"}
+                key={`store-${index}`}
+                onClick={() => switchGame(index)}
+              >
+                Game {index + 1}
+              </button>
+            ))}
+          </div>
+          <div className='flex items-center justify-evenly'>
+            {UltStory.words.map((word, index) => (
+              <button
+                className={stores[index].won ? "text-green-400" : "text-white-900"}
+                key={`word-${index}`}
+                onClick={() => switchGame(index)}
+              >
+                {word}
+              </button>
+            ))}
+          </div>
+          {/*<Wordle store={stores[activeStoreIndex]} />*/}
+          <div className='flex items-center justify-evenly'>
+            <UltimateBoard store={UltStory} />
+          </div>
+        </div>
+      )}
+    </Observer>
+  );
 };
+
 export default WordlePage;
-  
