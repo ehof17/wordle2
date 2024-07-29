@@ -47,9 +47,11 @@ class TrieNode {
 class Solution {
     ROWS: number;
     COLS: number;
+    skip: number;
     constructor() {
         this.ROWS = 0;
         this.COLS = 0;
+        this.skip = 0;
     }
 
     /**
@@ -117,6 +119,14 @@ class Solution {
         this.dfs(r - 1, c, node, word, board, res, visit, root, positions);
         this.dfs(r, c + 1, node, word, board, res, visit, root, positions);
         this.dfs(r, c - 1, node, word, board, res, visit, root, positions);
+
+        if (this.skip >= 2){
+            this.dfs(r + 2, c, node, word, board, res, visit, root, positions);
+            this.dfs(r - 2, c, node, word, board, res, visit, root, positions);
+            this.dfs(r, c + 2, node, word, board, res, visit, root, positions);
+            this.dfs(r, c - 2, node, word, board, res, visit, root, positions);
+        }
+      
     
         visit.delete(r + ',' + c);
         positions.pop();
@@ -255,14 +265,41 @@ class UltStore {
         let aboveRow;
         if(direction == 'up'){
             let row = this.selected; 
-            for (let col = 0; col < this.wordsGrid[0].length; col++) {        
-            if (row != 0){
-                if (this.wordsGrid[row - 1][col] === '' && this.wordsGrid[row][col] !== '') {
-                    this.wordsGrid[row - 1][col] = this.wordsGrid[row][col];
-                    this.wordsGrid[row][col] = '';
-                  }
+            if (row != 0) {
+                let wordStarted = false;
+                let wordStartIndex = 0;
+    
+                for (let col = 0; col <= this.wordsGrid[0].length; col++) {
+                    // Check for the end of a word or end of the row
+                    if (col == this.wordsGrid[0].length || this.wordsGrid[row][col] === '') {
+                        if (wordStarted) {
+                            // Check if the entire word can move up
+                            let canMoveUp = true;
+                            for (let checkCol = wordStartIndex; checkCol < col; checkCol++) {
+                                if (this.wordsGrid[row - 1][checkCol] !== '') {
+                                    canMoveUp = false;
+                                    break;
+                                }
+                            }
+    
+                            // Move the word up if possible
+                            if (canMoveUp) {
+                                for (let moveCol = wordStartIndex; moveCol < col; moveCol++) {
+                                    this.wordsGrid[row - 1][moveCol] = this.wordsGrid[row][moveCol];
+                                    this.wordsGrid[row][moveCol] = '';
+                                }
+                            }
+    
+                            wordStarted = false;
+                        }
+                    } else {
+                        if (!wordStarted) {
+                            wordStarted = true;
+                            wordStartIndex = col;
+                        }
+                    }
+                }
             }
-        }
              
                 if(this.selected == 0){
                      
@@ -275,20 +312,43 @@ class UltStore {
         }
         if(direction == 'down'){
            
-            for (let col = 0; col < this.wordsGrid[0].length; col++) {
-                //for (let row = this.selected; row < this.wordsGrid.length - 1; row++) {
-                    let row = this.selected; 
-                    
-                    if (row != 4){
-                        if (this.wordsGrid[row + 1][col] === '' && this.wordsGrid[row][col] !== '') {
-                            this.wordsGrid[row + 1][col] = this.wordsGrid[row][col];
-                            this.wordsGrid[row][col] = '';
-                          }
+            let row = this.selected;
+        if (row != this.wordsGrid.length - 1) {
+            let wordStarted = false;
+            let wordStartIndex = 0;
+
+            for (let col = 0; col <= this.wordsGrid[0].length; col++) {
+                // Check for the end of a word or end of the row
+                if (col == this.wordsGrid[0].length || this.wordsGrid[row][col] === '') {
+                    if (wordStarted) {
+                        // Check if the entire word can move down
+                        let canMoveDown = true;
+                        for (let checkCol = wordStartIndex; checkCol < col; checkCol++) {
+                            if (this.wordsGrid[row + 1][checkCol] !== '') {
+                                canMoveDown = false;
+                                break;
+                            }
+                        }
+
+                        // Move the word down if possible
+                        if (canMoveDown) {
+                            for (let moveCol = wordStartIndex; moveCol < col; moveCol++) {
+                                this.wordsGrid[row + 1][moveCol] = this.wordsGrid[row][moveCol];
+                                this.wordsGrid[row][moveCol] = '';
+                            }
+                        }
+
+                        wordStarted = false;
                     }
-                   
-                
-                //}
-              }
+                } else {
+                    if (!wordStarted) {
+                        wordStarted = true;
+                        wordStartIndex = col;
+                    }
+                }
+            }
+        }
+
             if (this.selected == 4){
                 this.selected = 0
             }
@@ -349,6 +409,9 @@ class UltStore {
         }
         
         const letter = this.wordsGrid[index[0]][index[1]];
+        if (letter == ""){
+        return;
+        }
         
         // Find the index in the lightningIDX array
         const existingIndex = this.lightningIDX.findIndex(
@@ -389,6 +452,9 @@ class UltStore {
             }
             else {
                 console.log('Index is not within one move of the last index added:', index);
+                console.log("Here are the lightning indexs")
+                console.log(this.lightningIDX)
+                
             }
         }
         
@@ -618,7 +684,7 @@ yellowHelper(possibleNextLetters, letterToCheck, trueIndex, startingIndex, wordI
     return [];
 }
 submitCol(){
-    console.log('please')
+    
     if (this.redIDX.length < this.letterLength){
         return;
     }
@@ -635,6 +701,7 @@ submitCol(){
         
         
     }
+    this.sol.skip++;
     this.lightningEnabled = true;
     this.words = wordsCopy;
     this.letterLength--;

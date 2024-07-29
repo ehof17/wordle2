@@ -5,6 +5,17 @@ import {faBolt} from '@fortawesome/free-solid-svg-icons';
 import MouseFollower from './MouseFollow';
 
 const UltimateBoard = observer(({ store }) => {
+    const icons = [];
+    for (let i = 0; i < store.sol.skip; i++) {
+        icons.push(
+            <FontAwesomeIcon 
+                key={i} 
+                icon={faBolt} 
+                className="text-yellow-400" 
+                onClick={action(() => { store.trySubmitLightning3() })} 
+            />
+        );
+    }
     const handleMouseOver = () => {
         document.documentElement.style.setProperty('--circle-size', '50px');
       };
@@ -18,8 +29,11 @@ const UltimateBoard = observer(({ store }) => {
       <h1 className="text-6xl font-bold uppercase text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-green-400">
         Ultimate Wordle {store.solution}
         {store.lightningIDX}
-        
+        <div className="flex">
+            {icons}
+        </div>
       </h1>
+    
       {store.lightningEnabled && (
         <>
         <FontAwesomeIcon icon={faBolt} className="text-yellow-400" onClick={action(() => {store.trySubmitLightning3()})}/>
