@@ -3,6 +3,7 @@ import { act } from 'react';
 import words from '../../words.json';
 import { makeAutoObservable, action } from "mobx";
 import { match } from 'assert';
+import next from 'next';
 class TrieNode {
     children: {};
     isEndOfWord: boolean;
@@ -55,6 +56,9 @@ class UltStore {
     redIDX = [[-1,-1]]
     orangeIDX = [[-1,-1]]
     letterLength = 5
+    threeLetterWordsIndexes: number[][][] = [];
+    fourLetterWordsIndexes = [[-1,-1]]
+    fiveLetterWordsIndexes = [[-1,-1]]
     wordsGrid: string[][] = [
         ["","","","","a1", "a2", "a3", "a4", "a5","","","",""],
         ["","","","","b1", "b2", "b3", "b4", "b5","","","",""],
@@ -62,6 +66,7 @@ class UltStore {
         ["","","","","d1", "d2", "d3", "d4", "d5","","","",""],
         ["","","","","e1", "e2", "e3", "e4", "e5","","","",""]
       ];
+      allWords = words;
 
 
     
@@ -104,6 +109,54 @@ class UltStore {
 
     }
 
+
+    isSafe(row, col, visited){
+        return (row >=0 && row < this.wordsGrid.length && col >=0 && col < this.wordsGrid[0].length && !visited[row][col]);
+    }
+searchWord(row, col, visited, str,indexes: number[][]){
+let x = [-1, -1, -1,  0, 0,  1, 1, 1];
+let y = [-1,  0,  1, -1, 1, -1, 0, 1];
+visited[row][col] = true;
+  str = str + this.wordsGrid[row][col];
+  indexes.push([row, col]);
+  // If str is present in dictionary, then print it
+if (this.allWords.includes(str)) {
+    console.log(str);
+    if (str.length === 3) {
+        this.threeLetterWordsIndexes.push([...indexes]);
+    } else if (str.length === 4) {
+        this.fourLetterWordsIndexes.push([indexes]);
+    } else if (str.length === 5) {
+        this.fiveLetterWordsIndexes.push([indexes]);
+    }
+}
+
+  // Traverse 8 adjacent cells of wordsGrid[row][col]
+  for (let dir = 0; dir < 8; dir++) {
+    if (this.isSafe(row + x[dir], col + y[dir], visited)) {
+      this.searchWord(row + x[dir], col + y[dir], visited, str);
+    }
+  }
+
+  // Erase current character from string and mark visited of current cell as false
+  str = str.slice(0, -1);
+  visited[row][col] = false;
+}
+    lookWords(){
+
+        let visited = Array(this.wordsGrid.length).fill(false).map(() => Array(this.wordsGrid[0].length).fill(false));
+
+        // Initialize current string
+        let str = '';
+      
+        // Consider every character and look for all words starting with this character
+        for (let row = 0; row < this.wordsGrid.length; row++) {
+          for (let col = 0; col < this.wordsGrid[0].length; col++) {
+            this.searchWord(row, col, visited, str);
+          }
+        }
+      }
+
     init(){
         this.word = words[Math.floor(Math.random() * words.length)];
         this.guesses = new Array(6).fill('');
@@ -116,24 +169,43 @@ class UltStore {
     // swap the values at the selected index and the index passed in
  
     changeSelected(direction){
+        let aboveRow;
         if(direction == 'up'){
-            if(this.selected == 0){
-                this.selected = 4;
-            }
-            else{
-                this.selected--;
-            }
-            for (let col = 0; col < this.wordsGrid[0].length; col++) {
-                for (let row = 0; row < this.wordsGrid.length - 1; row++) {
-                  if (this.wordsGrid[row][col] === '' && this.wordsGrid[row + 1][col] !== '') {
-                    this.wordsGrid[row][col] = this.wordsGrid[row + 1][col];
-                    this.wordsGrid[row + 1][col] = '';
+            let row = this.selected; 
+            for (let col = 0; col < this.wordsGrid[0].length; col++) {        
+            if (row != 0){
+                if (this.wordsGrid[row - 1][col] === '' && this.wordsGrid[row][col] !== '') {
+                    this.wordsGrid[row - 1][col] = this.wordsGrid[row][col];
+                    this.wordsGrid[row][col] = '';
                   }
+            }
+        }
+             
+                if(this.selected == 0){
+                     
+                    this.selected = 4;
                 }
-              }
+                else{
+                    this.selected--;
+                }
 
         }
         if(direction == 'down'){
+           
+            for (let col = 0; col < this.wordsGrid[0].length; col++) {
+                //for (let row = this.selected; row < this.wordsGrid.length - 1; row++) {
+                    let row = this.selected; 
+                    
+                    if (row != 4){
+                        if (this.wordsGrid[row + 1][col] === '' && this.wordsGrid[row][col] !== '') {
+                            this.wordsGrid[row + 1][col] = this.wordsGrid[row][col];
+                            this.wordsGrid[row][col] = '';
+                          }
+                    }
+                   
+                
+                //}
+              }
             if (this.selected == 4){
                 this.selected = 0
             }
@@ -141,14 +213,6 @@ class UltStore {
                 this.selected++;
             
             }
-            for (let col = 0; col < this.wordsGrid[0].length; col++) {
-                for (let row = this.wordsGrid.length - 1; row > 0; row--) {
-                  if (this.wordsGrid[row][col] === '' && this.wordsGrid[row - 1][col] !== '') {
-                    this.wordsGrid[row][col] = this.wordsGrid[row - 1][col];
-                    this.wordsGrid[row - 1][col] = '';
-                  }
-                }
-              }
         }
         this.checkForYellow()
     }
@@ -203,6 +267,9 @@ class UltStore {
         }
         if (e.key === 'w'){
             return this.changeSelected('up');
+        }
+        if(e.key == 'Enter'){
+            return this.lookWords();
         }
 
         if (e.key === 'Backspace'){
@@ -367,6 +434,7 @@ submitCol(){
     this.words = wordsCopy;
     this.letterLength--;
     this.checkForYellow();
+    this.findSolution();
     
 }
     findSolution2(){

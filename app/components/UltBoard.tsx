@@ -16,7 +16,7 @@ const UltimateBoard = observer(({store}) => {
                 <div key={index} className="bg-green">
                     <div className="grid" style={{ gridTemplateColumns: "repeat(13, minmax(0, 1fr))"  }}>
                         {row.map((letter, i) => {
-                            const bgColor = index === store.selected?"bg-green-400" : "bg-transparent";
+                            const bgColor = index === store.selected?"border-blue-500" : "bg-transparent";
                             return (
                                 <div key={i} className={`h-8 w-8 border border-gray-400 text-white font-bold uppercase flex items-center justify-center ${bgColor}`}>
                                     {letter}
