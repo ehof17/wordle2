@@ -1,10 +1,16 @@
+
 import { observer } from 'mobx-react-lite';
 import { action } from 'mobx';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faBolt} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBolt } from '@fortawesome/free-solid-svg-icons';
 import MouseFollower from './MouseFollow';
+import UltStore from '../stores/UltStore';
 
-const UltimateBoard = observer(({ store }) => {
+interface UltimateBoardProps {
+  store: UltStore; 
+}
+
+const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
     const icons = [];
     for (let i = 0; i < store.sol.skip; i++) {
         icons.push(

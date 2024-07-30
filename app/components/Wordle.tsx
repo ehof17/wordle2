@@ -5,7 +5,10 @@ import Querty from "./Querty";
 import Guess from "./Guess";
 import PuzzleStore from "../stores/PuzzleStore";
 
-const Wordle = observer(({store}) => {
+interface WordleProps {
+  store: PuzzleStore; 
+}
+const Wordle = observer(({store}:WordleProps) => {
 
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center bg-gray-600">

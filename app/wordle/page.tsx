@@ -112,7 +112,7 @@ return (
       </div>
     )}
   </Observer>
-);s
+);
 };
 
 export default WordlePage;

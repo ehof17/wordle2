@@ -1,8 +1,12 @@
 
 import { observer } from "mobx-react-lite";
 import Guess from "./Guess";
+import PuzzleStore from '../stores/PuzzleStore';
 
-const Ultimate = observer(({stores}) => {
+interface UltProps {
+  stores: PuzzleStore[]; 
+}
+const Ultimate = observer(({stores}: UltProps) => {
     return (
       <div className="flex h-screen w-screen flex-col items-center justify-center bg-gray-600">
         <h1 className="text-6xl font-bold uppercase text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-green-400">Ultimate Wordle</h1>

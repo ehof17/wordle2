@@ -617,7 +617,7 @@ class UltStore {
             //     const rows = positions.map(([row, col]) => row);
             //     return new Set(rows).size === 5;
             // });
-            const wordsMap = this.sol.findWordsByRows(this.wordsGrid, this.allWords) as Map<string, WordMatch>;
+            const wordsMap = this.sol.findWordsByRows(this.wordsGrid, this.allWords);
             console.log('wordsMap:', wordsMap);
             console.log('wordsMap type:', typeof wordsMap);
             console.log('wordsMap:', wordsMap);
@@ -661,7 +661,7 @@ class UltStore {
 
     }
     updateNewYellow(){
-        const wordsMap = this.sol.findWordsByRows(this.wordsGrid, this.allWords) as Map<string, WordMatch>;
+        const wordsMap = this.sol.findWordsByRows(this.wordsGrid, this.allWords);
         console.log('wordsMap:', wordsMap);
         console.log('wordsMap type:', typeof wordsMap);
         console.log('wordsMap:', wordsMap);
