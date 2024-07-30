@@ -4,6 +4,12 @@ import words from '../../words.json';
 import { makeAutoObservable, action, toJS } from "mobx";
 import { match } from 'assert';
 import next from 'next';
+interface WordMatch {
+    column: number;
+    matchedRows: number[];
+    unmatchedRows: number[];
+    word: string;
+}
 class TrieNode {
     children: {};
     isWord: boolean;
@@ -30,6 +36,17 @@ class TrieNode {
         cur.isWord = true;
     }
 
+    addWord2(word) {
+        let node = this;
+        for (const char of word) {
+            if (!node.children[char]) {
+                node.children[char] = new TrieNode();
+            }
+            node = node.children[char];
+        }
+        node.isWord = true;
+    }
+
     /**
      * @param {string} word
      */
@@ -42,6 +59,17 @@ class TrieNode {
                 cur.refs--;
             }
         }
+    }
+
+    removeWord2(word) {
+        let node = this;
+        for (const char of word) {
+            if (!node.children[char]) {
+                return;
+            }
+            node = node.children[char];
+        }
+        node.isWord = false;
     }
 }
 class Solution {
@@ -73,7 +101,7 @@ class Solution {
     
         for (let r = 0; r < this.ROWS; r++) {
             for (let c = 0; c < this.COLS; c++) {
-                this.dfs(r, c, root, '', board, res, visit, root, []);
+                this.dfs(r, c, root, '', board, res, visit, root, [], words);
             }
         }
     
@@ -90,8 +118,9 @@ class Solution {
      * @param {Set<string>} visit
      * @param {TrieNode} root
      * @param {Array<[number, number]>} positions
+     * @param {Array<string>} targetWords
      */
-    dfs(r, c, node, word, board, res, visit, root, positions) {
+    dfs(r, c, node, word, board, res, visit, root, positions, targetWords) {
         if (
             r < 0 ||
             r >= this.ROWS ||
@@ -115,22 +144,141 @@ class Solution {
             root.removeWord(word);
         }
     
-        this.dfs(r + 1, c, node, word, board, res, visit, root, positions);
-        this.dfs(r - 1, c, node, word, board, res, visit, root, positions);
-        this.dfs(r, c + 1, node, word, board, res, visit, root, positions);
-        this.dfs(r, c - 1, node, word, board, res, visit, root, positions);
+    
+    
+        this.dfs(r + 1, c, node, word, board, res, visit, root, positions, targetWords);
+        this.dfs(r - 1, c, node, word, board, res, visit, root, positions, targetWords);
+        this.dfs(r, c + 1, node, word, board, res, visit, root, positions, targetWords);
+        this.dfs(r, c - 1, node, word, board, res, visit, root, positions, targetWords);
 
         if (this.skip >= 2){
-            this.dfs(r + 2, c, node, word, board, res, visit, root, positions);
-            this.dfs(r - 2, c, node, word, board, res, visit, root, positions);
-            this.dfs(r, c + 2, node, word, board, res, visit, root, positions);
-            this.dfs(r, c - 2, node, word, board, res, visit, root, positions);
+            this.dfs(r + 2, c, node, word, board, res, visit, root, positions, targetWords);
+            this.dfs(r - 2, c, node, word, board, res, visit, root, positions, targetWords);
+            this.dfs(r, c + 2, node, word, board, res, visit, root, positions, targetWords);
+            this.dfs(r, c - 2, node, word, board, res, visit, root, positions, targetWords);
         }
-      
     
         visit.delete(r + ',' + c);
         positions.pop();
     }
+
+    findWordsByRows(board, words) {
+        const res = new Map();
+        const root = new TrieNode();
+    
+        for (const w of words) {
+            root.addWord2(w);
+        }
+    
+        this.ROWS = board.length;
+        this.COLS = board[0].length;
+        let wordsMap = new Map();
+        for (let c = 0; c < this.COLS; c++) {
+            wordsMap = this.checkColumn(c, root, board, res, words, wordsMap);
+        }
+        // Maybe if there are multiple in same columns we can transition between them
+    
+        // return Array.from(res.entries());
+        return wordsMap;
+    }
+
+    checkColumn(c, root, board, res, targetWords, wordsMap) {
+        let word = '';
+        const positions = [];
+
+        for (let r = 0; r < this.ROWS; r++) {
+            if (!root.children[board[r][c]]) {
+                word = '';
+                positions.length = 0;
+                continue;
+            }
+
+            word += board[r][c];
+            positions.push([r, c]);
+
+            // Check for partial matches
+
+            const FiveLetterTargetWords = targetWords.filter(word => word.length === 5);
+            for (const targetWord of FiveLetterTargetWords) {
+                // Have a map of word and their column and matched rows
+
+                if (this.isPartialMatch(word, targetWord, 3, board, c)) {
+                    console.log(`partial match between ${word} and ${targetWord}`);
+                    const swag = this.isPartialMatch(word, targetWord, 3, board, c)
+
+                    if (wordsMap.has(targetWord)) {
+                        wordsMap.get(targetWord).push(swag)
+                    }
+                    else
+                    {
+                    wordsMap.set(targetWord, [swag])
+                    }
+                    console.log(swag)
+                    console.log(`At column ${c}`);
+                }
+            }
+
+            if (root.children[board[r][c]].isWord) {
+                res.set(word, [...positions]);
+                root.removeWord2(word);
+                word = '';
+                positions.length = 0;
+            }
+        }
+        return wordsMap;
+    }
+
+    isPartialMatch(word1, word2, minMatch, board, col) {
+        let matchCount = 0;
+        const len = Math.min(word1.length, word2.length);
+        const missingLetters = {};
+        const matchedRows = new Set<number>();
+        const unmatchedRows = new Set<number>();
+    
+        // Track matched letters and their rows
+        for (let i = 0; i < len; i++) {
+            if (word1[i] === word2[i]) {
+                matchCount++;
+                matchedRows.add(i);
+            } else {
+                missingLetters[word2[i]] = i; // Track the row index where the letter should be
+            }
+        }
+    
+        if (matchCount >= minMatch) {
+            // Check if missing letters are present in different rows
+            for (const letter in missingLetters) {
+                const rowIndex = missingLetters[letter];
+                let found = false;
+                for (let c = 0; c < board[rowIndex].length; c++) {
+                    if (board[rowIndex][c] === letter && !matchedRows.has(rowIndex)) {
+                        found = true;
+                        unmatchedRows.add(rowIndex);
+                        break;
+                    }
+                }
+                if (!found) {
+                    return false;
+                }
+            }
+    
+            // Ensure the total number of matched and unmatched rows is equal to the length of the word
+            if ((Array.from(matchedRows)).length + (Array.from(unmatchedRows)).length === word2.length) {
+                const wordMatch :WordMatch = {
+                    column: col,
+                    matchedRows: Array.from(matchedRows),
+                    unmatchedRows: Array.from(unmatchedRows),
+                    word: word2
+
+                }
+                return wordMatch;
+            }
+        }
+        return false;
+    }
+
+
+
 }
 class UltStore {
     word= '';
@@ -156,6 +304,8 @@ class UltStore {
     sol = new Solution();
     score = 0;
     yellow2IDX = [[-1,-1]];
+    orange2IDX = [[-1,-1]];
+    red2IDX = [[-1,-1]];
     wordsGrid: string[][] = [
         ["","","","","t", "r", "i", "a", "d","","","",""],
         ["","","","","p", "l", "e", "b", "e","","","",""],
@@ -208,6 +358,10 @@ class UltStore {
 
     }
 
+    submitScore(){
+        const score = this.score;
+        
+    }
 
 
     isSafe(row: number, col: number, visited: boolean[][]): boolean {
@@ -286,6 +440,11 @@ class UltStore {
                             if (canMoveUp) {
                                 for (let moveCol = wordStartIndex; moveCol < col; moveCol++) {
                                     this.wordsGrid[row - 1][moveCol] = this.wordsGrid[row][moveCol];
+                                    if (this.yellow2IDX.some(([yellowRow, yellowCol]) => yellowRow === row && yellowCol === moveCol)) {
+                                        this.yellow2IDX.push([row -1, moveCol]);
+                                        this.yellow2IDX = this.yellow2IDX.filter(([yellowRow, yellowCol]) => yellowRow !== row || yellowCol !== moveCol);
+                                    }
+                                    
                                     this.wordsGrid[row][moveCol] = '';
                                 }
                             }
@@ -334,6 +493,11 @@ class UltStore {
                         if (canMoveDown) {
                             for (let moveCol = wordStartIndex; moveCol < col; moveCol++) {
                                 this.wordsGrid[row + 1][moveCol] = this.wordsGrid[row][moveCol];
+                                if (this.yellow2IDX.some(([yellowRow, yellowCol]) => yellowRow === row && yellowCol === moveCol)) {
+                                    this.yellow2IDX.push([row + 1, moveCol]);
+                                    this.yellow2IDX = this.yellow2IDX.filter(([yellowRow, yellowCol]) => yellowRow !== row || yellowCol !== moveCol);
+                                }
+
                                 this.wordsGrid[row][moveCol] = '';
                             }
                         }
@@ -357,6 +521,7 @@ class UltStore {
             
             }
         }
+        this.updateNewYellow();
         this.checkForYellow()
     }
     moveSelection(direction){
@@ -389,6 +554,7 @@ class UltStore {
             this.wordsGrid[this.selected] = row;
         }
         this.checkForYellow()
+        this.updateNewYellow()
     }
     submitGuess(){
         if (words.includes(this.guesses[this.currentGuess])){
@@ -436,25 +602,23 @@ class UltStore {
                 console.log('Only the first or last index can be removed:', index);
             }
         } else {
-            // Check if the new index is within one move of the last index added
+            // Check if the new index is within the number of moves specified by this.sol.skip
             const lastIndex = this.lightningIDX[this.lightningIDX.length - 1];
             if (
                 !lastIndex ||
-                (Math.abs(lastIndex[0] - index[0]) <= 1 && Math.abs(lastIndex[1] - index[1]) <= 1)
+                (Math.abs(lastIndex[0] - index[0]) <= this.sol.skip && Math.abs(lastIndex[1] - index[1]) <= this.sol.skip)
             ) {
-                // If the index does not exist and is within one move, add it
+                // If the index does not exist and is within the allowed number of moves, add it
                 this.lightningIDX.push(index);
                 this.clickedIndexes.push(index);
                 console.log('Added index:', index);
         
                 // Add the letter to this.lightingWord
                 this.lightingWord += letter;
-            }
-            else {
-                console.log('Index is not within one move of the last index added:', index);
-                console.log("Here are the lightning indexs")
-                console.log(this.lightningIDX)
-                
+            } else {
+                console.log('Index is not within the allowed number of moves of the last index added:', index);
+                console.log("Here are the lightning indexes:");
+                console.log(this.lightningIDX);
             }
         }
         
@@ -480,12 +644,47 @@ class UltStore {
         }
         if(e.key == 'Enter'){
             console.log('enter the fragon')
-            let splitGrid = this.wordsGrid.map(row => row.slice(4, 9));
-            splitGrid = this.wordsGrid
-            let wordsWithPositions = this.sol.findWords(splitGrid, this.allWords)
-            .filter(([word, positions]) => !this.words.includes(word));
-            console.log(wordsWithPositions)
+            // let splitGrid = this.wordsGrid.map(row => row.slice(4, 9));
+            // splitGrid = this.wordsGrid
+            // let wordsWithPositions = this.sol.findWords(splitGrid, this.allWords)
+            // .filter(([word, positions]) => !this.words.includes(word));
+            // console.log(wordsWithPositions)
+            // const wordsEachLetterInDifferentRow = wordsWithPositions.filter(([word, positions]) => {
+            //     const rows = positions.map(([row, col]) => row);
+            //     return new Set(rows).size === 5;
+            // });
+            const wordsMap = this.sol.findWordsByRows(this.wordsGrid, this.allWords) as Map<string, WordMatch>;
+            console.log('wordsMap:', wordsMap);
+            console.log('wordsMap type:', typeof wordsMap);
+            console.log('wordsMap:', wordsMap);
+            console.log('wordsMap type:', typeof wordsMap);
+            const colToKeys = new Map<number, number[]>();
             
+            for (const [key, value] of wordsMap) {
+                console.log(`Key: ${key}, Value:`, value);
+                for (const match of value) {
+                    if(colToKeys.has(match.column)){
+                        if (colToKeys.get(match.column).length < match.matchedRows.length){
+                            colToKeys.set(match.column, match.matchedRows);
+                     
+                        }
+                    }
+                    else{
+                        colToKeys.set(match.column, match.matchedRows);
+                    }
+                   
+                }
+            }
+            console.log("Donezo")
+            let yellow = [];
+            for (const [key, value] of colToKeys) {
+                for (const row of value){
+                    yellow.push([row, key]);
+                }
+            }
+            
+           
+           
         }
 
         if (e.key === 'Backspace'){
@@ -496,6 +695,54 @@ class UltStore {
        
         
 
+    }
+    updateNewYellow(){
+        const wordsMap = this.sol.findWordsByRows(this.wordsGrid, this.allWords) as Map<string, WordMatch>;
+        console.log('wordsMap:', wordsMap);
+        console.log('wordsMap type:', typeof wordsMap);
+        console.log('wordsMap:', wordsMap);
+        console.log('wordsMap type:', typeof wordsMap);
+        const colToKeys = new Map<number, number[]>();
+        
+        for (const [key, value] of wordsMap) {
+            console.log(`Key: ${key}, Value:`, value);
+            for (const match of value) {
+                if(colToKeys.has(match.column)){
+                    if (colToKeys.get(match.column).length < match.matchedRows.length){
+                        colToKeys.set(match.column, match.matchedRows);
+                 
+                    }
+                }
+                else{
+                    colToKeys.set(match.column, match.matchedRows);
+                }
+               
+            }
+        }
+        console.log("Donezo")
+        let yellow = [];
+        let orange = [];
+        let red = [];
+        
+        for (const [key, value] of colToKeys) {
+            if (value.length === 3) {
+                for (const row of value) {
+                    yellow.push([row, key]);
+                }
+            } else if (value.length === 4) {
+                for (const row of value) {
+                    orange.push([row, key]);
+                }
+            } else if (value.length === 5) {
+                for (const row of value) {
+                    red.push([row, key]);
+                }
+            }
+        }
+        this.yellow2IDX = yellow;
+        this.orange2IDX = orange;
+        this.red2IDX = red;
+        this.yellowIDX = yellow;
     }
     calculateWordScore(word: string): number {
 
@@ -610,18 +857,19 @@ class UltStore {
 }
 }
 checkForYellow(){
-    const yellowIDX = [];
-    this.redIDX = [];
-    this.yellowIDX = [];
-    this.orangeIDX = [];
-    for (let i = 0; i < this.letterLength; i++){
-        const letterToCheck = this.words[0][i];
-        const trueIndex = i + this.startingIndexes[0];
-        const solutionsThatStartWithIt = this.solutions.filter(word => new RegExp(`^${letterToCheck}`, 'i').test(word));
-        const possibleNextLetters =solutionsThatStartWithIt.map(word => word[1])
-        const swag = this.yellowHelper(possibleNextLetters, letterToCheck, trueIndex, this.startingIndexes[0], 1, [[0, i]]);
+    console.log("Skipping check for yellow")
+    // const yellowIDX = [];
+    // this.redIDX = [];
+    // this.yellowIDX = [];
+    // this.orangeIDX = [];
+    // for (let i = 0; i < this.letterLength; i++){
+    //     const letterToCheck = this.words[0][i];
+    //     const trueIndex = i + this.startingIndexes[0];
+    //     const solutionsThatStartWithIt = this.solutions.filter(word => new RegExp(`^${letterToCheck}`, 'i').test(word));
+    //     const possibleNextLetters =solutionsThatStartWithIt.map(word => word[1])
+    //     const swag = this.yellowHelper(possibleNextLetters, letterToCheck, trueIndex, this.startingIndexes[0], 1, [[0, i]]);
         
-    }
+    // }
     //this.yellowIDX = yellowIDX;
 }
 yellowHelper(possibleNextLetters, letterToCheck, trueIndex, startingIndex, wordIndex, matchedIndexes=[]){
@@ -685,25 +933,41 @@ yellowHelper(possibleNextLetters, letterToCheck, trueIndex, startingIndex, wordI
 }
 submitCol(){
     
-    if (this.redIDX.length < this.letterLength){
-        return;
+    // if (this.redIDX.length < this.letterLength){
+    //     return;
+    // }
+    // const wordsCopy = this.words.map(innerArray => [...innerArray]);
+    // const  redIDXCopy =[...this.redIDX];
+    // console.log('help me')
+    // for (let [row, col] of redIDXCopy){
+    //     console.log(`Row ${row} and col ${col}`)
+    //     const numsToMove = -(col-(this.letterLength-1))
+    //     const preNumsToKeep = this.words[row].slice(0, this.letterLength - numsToMove-1);
+    //     const numsToMoveBack = this.words[row].slice(this.letterLength - numsToMove);
+    //     wordsCopy[row] = preNumsToKeep.concat(numsToMoveBack);
+        
+        
+        
+    // }
+    if (this.red2IDX.length < this.letterLength){
+        console.log("Nuh uh")
+        this.trySubmitLightning3();
+    return;
     }
-    const wordsCopy = this.words.map(innerArray => [...innerArray]);
-    const  redIDXCopy =[...this.redIDX];
-    console.log('help me')
-    for (let [row, col] of redIDXCopy){
-        console.log(`Row ${row} and col ${col}`)
-        const numsToMove = -(col-(this.letterLength-1))
-        const preNumsToKeep = this.words[row].slice(0, this.letterLength - numsToMove-1);
-        const numsToMoveBack = this.words[row].slice(this.letterLength - numsToMove);
-        wordsCopy[row] = preNumsToKeep.concat(numsToMoveBack);
-        
-        
-        
+    const red2IDXCopy = [...this.red2IDX];
+    const wordsGridCopy = this.wordsGrid.map(innerArray => [...innerArray]);
+    for (const [row, col] of red2IDXCopy) {
+        const letter = wordsGridCopy[row][col];
+        const score = this.calculateWordScore(letter);
+        this.score += score;
+
+        wordsGridCopy[row][col] = "";
     }
+    this.wordsGrid = wordsGridCopy;
+
     this.sol.skip++;
     this.lightningEnabled = true;
-    this.words = wordsCopy;
+    //this.words = wordsCopy;
     this.letterLength--;
     this.checkForYellow();
     this.findSolution();

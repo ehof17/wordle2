@@ -8,9 +8,12 @@ import { useLocalObservable, Observer } from "mobx-react-lite";
 import PuzzleStore from "../stores/PuzzleStore";
 import UltimateBoard from '../components/UltBoard';
 import UltStore from "../stores/UltStore";
+import TitleScreen from '../components/TitleScreen';
+import { reaction } from 'mobx';
 
 const WordlePage = () => {
   const [activeStoreIndex, setActiveStoreIndex] = useState(0);
+  const [all_stores_won, setAllStoresWon] = useState(false);
   const stores = useLocalObservable(() => [
     new PuzzleStore(),
     new PuzzleStore(),
@@ -31,7 +34,11 @@ const WordlePage = () => {
 
   useEffect(() => {
     const handleKeyUp = (e) => {
-      UltStory.handleKeyUp(e);
+      if (all_stores_won) {
+        UltStory.handleKeyUp(e);
+      } else {
+        stores[activeStoreIndex].handleKeyUp(e);
+      }
     };
 
     window.addEventListener('keyup', handleKeyUp);
@@ -39,46 +46,73 @@ const WordlePage = () => {
     return () => {
       window.removeEventListener('keyup', handleKeyUp);
     };
-  }, [activeStoreIndex, stores]);
+  }, [activeStoreIndex, stores, all_stores_won]);
+
+  useEffect(() => {
+    const disposers = stores.map(store =>
+      reaction(
+        () => store.won,
+        () => {
+          const allStoresWon = stores.every(store => store.won);
+          if (allStoresWon) {
+            setAllStoresWon(true);
+          }
+        }
+      )
+    );
+
+    return () => {
+      disposers.forEach(dispose => dispose());
+    };
+  }, [stores]);
+
 
   const switchGame = (index) => {
     setActiveStoreIndex(index);
   };
 
-  return (
-    <Observer>
-      {() => (
-        <div>
-          <div className='flex items-center justify-evenly'>
-            {stores.map((store, index) => (
-              <button
-                className={store.won ? "text-green-400" : "text-white-900"}
-                key={`store-${index}`}
-                onClick={() => switchGame(index)}
-              >
-                Game {index + 1}
-              </button>
-            ))}
-          </div>
-          <div className='flex items-center justify-evenly'>
-            {UltStory.words.map((word, index) => (
-              <button
-                className={stores[index].won ? "text-green-400" : "text-white-900"}
-                key={`word-${index}`}
-                onClick={() => switchGame(index)}
-              >
-                {word}
-              </button>
-            ))}
-          </div>
-          {/*<Wordle store={stores[activeStoreIndex]} />*/}
-          <div className='flex items-center justify-evenly'>
-            <UltimateBoard store={UltStory} />
-          </div>
+  const allStoresWon = stores.every(store => store.won);
+
+return (
+  <Observer>
+    {() => (
+      <div>
+        <div className='flex items-center justify-evenly'>
+          {stores.map((store, index) => (
+            <button
+              className={store.won ? "text-green-400" : "text-white-900"}
+              key={`store-${index}`}
+              onClick={() => switchGame(index)}
+            >
+              Game {index + 1}
+            </button>
+          ))}
         </div>
-      )}
-    </Observer>
-  );
+        <div className='flex items-center justify-evenly'>
+          {UltStory.words.map((word, index) => (
+            <button
+              className={stores[index].won ? "text-green-400" : "text-white-900"}
+              key={`word-${index}`}
+              onClick={() => switchGame(index)}
+            >
+              {word}
+            </button>
+          ))}
+        </div>
+        <div>
+          {all_stores_won ? (
+            <div className='flex items-center justify-evenly'>
+              <TitleScreen />
+              <UltimateBoard store={UltStory} />
+            </div>
+          ) : (
+            <Wordle store={stores[activeStoreIndex]} />
+          )}
+        </div>
+      </div>
+    )}
+  </Observer>
+);s
 };
 
 export default WordlePage;

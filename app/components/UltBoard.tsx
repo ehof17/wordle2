@@ -67,7 +67,7 @@ const UltimateBoard = observer(({ store }) => {
             ?"bg-transparent"
             : rowIndex == store.selected
             ? "bg-blue-400"
-            : "bg-transparent";
+            : "";
 
           
             
@@ -75,6 +75,10 @@ const UltimateBoard = observer(({ store }) => {
             const backgroundColor = 
             letter === ""
             ?"bg-transparent"
+            : store.red2IDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex)
+            ? "bg-red-400"
+            : store.orange2IDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex)
+            ? "bg-orange-400"
             : store.yellow2IDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex)
             ? "bg-yellow-400"
             : rowIndex == store.selected
@@ -108,7 +112,8 @@ const UltimateBoard = observer(({ store }) => {
         </div>
     );
     })}
-      {store.words.map((row, rowIndex) => {
+      {
+      /*store.words.map((row, rowIndex) => {
         const preLength = store.startingIndexes[rowIndex];
         let selected = store.selected === rowIndex;
         const postLength = 13 - (preLength + store.letterLength);
@@ -155,7 +160,8 @@ const UltimateBoard = observer(({ store }) => {
           </>
         );
 
-      })}
+      })
+      */}
       <button className="bg-blue-400" onClick={action(e => { store.submitCol() })}>
         Submit
       </button>

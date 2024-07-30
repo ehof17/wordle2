@@ -1,0 +1,65 @@
+[debug] [2024-07-30T21:15:16.505Z] ----------------------------------------------------------------------
+[debug] [2024-07-30T21:15:16.509Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\elijah-hoffman\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js apphosting:backends:create --project ultwordle --location us-central1
+[debug] [2024-07-30T21:15:16.509Z] CLI Version:   13.14.2
+[debug] [2024-07-30T21:15:16.509Z] Platform:      win32
+[debug] [2024-07-30T21:15:16.509Z] Node Version:  v20.10.0
+[debug] [2024-07-30T21:15:16.510Z] Time:          Tue Jul 30 2024 14:15:16 GMT-0700 (Mountain Standard Time)
+[debug] [2024-07-30T21:15:16.510Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-07-30T21:15:16.524Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/firebaseapphosting.googleapis.com [none]
+[debug] [2024-07-30T21:15:16.525Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/firebaseapphosting.googleapis.com x-goog-quota-user=projects/ultwordle
+[debug] [2024-07-30T21:15:17.031Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/firebaseapphosting.googleapis.com 200
+[debug] [2024-07-30T21:15:17.032Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/firebaseapphosting.googleapis.com [omitted]
+[debug] [2024-07-30T21:15:17.032Z] >>> [apiv2][query] GET https://mobilesdk-pa.googleapis.com/v1/accessmanagement/tos:getStatus [none]
+[debug] [2024-07-30T21:15:17.324Z] <<< [apiv2][status] GET https://mobilesdk-pa.googleapis.com/v1/accessmanagement/tos:getStatus 200
+[debug] [2024-07-30T21:15:17.325Z] <<< [apiv2][body] GET https://mobilesdk-pa.googleapis.com/v1/accessmanagement/tos:getStatus {"overallStatus":"ACCEPTED","uTosStatus":{"tos":{"id":"firebase","tosId":"FIREBASE_UNIVERSAL"},"status":"ACCEPTED"},"childTosStatus":[{"tos":{"id":"cloud","tosId":"CLOUD_PLATFORM"},"status":"ACCEPTED"},{"tos":{"id":"firebase_b2b","tosId":"FIREBASE_B2B"},"status":"ACCEPTED"},{"tos":{"id":"universal","tosId":"GOOGLE_APIS"},"status":"ACCEPTED"}],"termsUrl":"https://firebase.google.com/terms","perServiceStatus":[{"tosId":"APP_CHECK","serviceStatus":{"tos":{"id":"app_check","tosId":"APP_CHECK"},"status":"ACCEPTED"}},{"tosId":"APP_HOSTING_TOS","serviceStatus":{"tos":{"id":"app_hosting","tosId":"APP_HOSTING_TOS"},"status":"ACCEPTED"}},{"tosId":"APP_HOSTING_TOS","serviceStatus":{"tos":{"id":"app_hosting","tosId":"APP_HOSTING_TOS"},"status":"ACCEPTED"}},{"tosId":"CORE_APPS","serviceStatus":{"tos":{"id":"core_apps","tosId":"CORE_APPS"},"status":"ACCEPTED"}},{"tosId":"FIREBASE_CRASHLYTICS_APP_DISTRIBUTION","serviceStatus":{"tos":{"id":"firebase_crashlytics_app_distribution","tosId":"FIREBASE_CRASHLYTICS_APP_DISTRIBUTION"},"status":"ACCEPTED"}},{"tosId":"GENERATIVE_LANGUAGE","serviceStatus":{"tos":{"id":"generative-language-api","tosId":"GENERATIVE_LANGUAGE"},"status":"NEVER_ACCEPTED"}},{"tosId":"FIREBASE_DATA_CONNECT","serviceStatus":{"tos":{"id":"data_connect","tosId":"FIREBASE_DATA_CONNECT"},"status":"ACCEPTED"}}]}
+[debug] [2024-07-30T21:15:17.327Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/developerconnect.googleapis.com [none]
+[debug] [2024-07-30T21:15:17.327Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/developerconnect.googleapis.com x-goog-quota-user=projects/ultwordle
+[debug] [2024-07-30T21:15:17.329Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/cloudbuild.googleapis.com [none]
+[debug] [2024-07-30T21:15:17.329Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/cloudbuild.googleapis.com x-goog-quota-user=projects/ultwordle
+[debug] [2024-07-30T21:15:17.334Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/secretmanager.googleapis.com [none]
+[debug] [2024-07-30T21:15:17.334Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/secretmanager.googleapis.com x-goog-quota-user=projects/ultwordle
+[debug] [2024-07-30T21:15:17.337Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/run.googleapis.com [none]
+[debug] [2024-07-30T21:15:17.337Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/run.googleapis.com x-goog-quota-user=projects/ultwordle
+[debug] [2024-07-30T21:15:17.343Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/artifactregistry.googleapis.com [none]
+[debug] [2024-07-30T21:15:17.343Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/artifactregistry.googleapis.com x-goog-quota-user=projects/ultwordle
+[debug] [2024-07-30T21:15:17.347Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/iam.googleapis.com [none]
+[debug] [2024-07-30T21:15:17.348Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/iam.googleapis.com x-goog-quota-user=projects/ultwordle
+[debug] [2024-07-30T21:15:17.554Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/developerconnect.googleapis.com 200
+[debug] [2024-07-30T21:15:17.554Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/developerconnect.googleapis.com [omitted]
+[debug] [2024-07-30T21:15:17.674Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/secretmanager.googleapis.com 200
+[debug] [2024-07-30T21:15:17.674Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/secretmanager.googleapis.com [omitted]
+[debug] [2024-07-30T21:15:17.675Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/iam.googleapis.com 200
+[debug] [2024-07-30T21:15:17.675Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/iam.googleapis.com [omitted]
+[debug] [2024-07-30T21:15:17.730Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/run.googleapis.com 200
+[debug] [2024-07-30T21:15:17.731Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/run.googleapis.com [omitted]
+[debug] [2024-07-30T21:15:17.739Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/artifactregistry.googleapis.com 200
+[debug] [2024-07-30T21:15:17.740Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/artifactregistry.googleapis.com [omitted]
+[debug] [2024-07-30T21:15:17.790Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/cloudbuild.googleapis.com 200
+[debug] [2024-07-30T21:15:17.790Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/ultwordle/services/cloudbuild.googleapis.com [omitted]
+[debug] [2024-07-30T21:15:17.791Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/ultwordle/serviceAccounts/firebase-app-hosting-compute@ultwordle.iam.gserviceaccount.com:testIamPermissions [none]
+[debug] [2024-07-30T21:15:17.791Z] >>> [apiv2][(partial)header] POST https://iam.googleapis.com/v1/projects/ultwordle/serviceAccounts/firebase-app-hosting-compute@ultwordle.iam.gserviceaccount.com:testIamPermissions x-goog-quota-user=projects/ultwordle
+[debug] [2024-07-30T21:15:17.791Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/ultwordle/serviceAccounts/firebase-app-hosting-compute@ultwordle.iam.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2024-07-30T21:15:18.053Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/ultwordle/serviceAccounts/firebase-app-hosting-compute@ultwordle.iam.gserviceaccount.com:testIamPermissions 200
+[debug] [2024-07-30T21:15:18.054Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/ultwordle/serviceAccounts/firebase-app-hosting-compute@ultwordle.iam.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2024-07-30T21:15:18.054Z] >>> [apiv2][query] GET https://firebaseapphosting.googleapis.com/v1alpha/projects/ultwordle/locations 
+[debug] [2024-07-30T21:15:18.434Z] <<< [apiv2][status] GET https://firebaseapphosting.googleapis.com/v1alpha/projects/ultwordle/locations 200
+[debug] [2024-07-30T21:15:18.435Z] <<< [apiv2][body] GET https://firebaseapphosting.googleapis.com/v1alpha/projects/ultwordle/locations {"locations":[{"name":"projects/ultwordle/locations/us-central1","locationId":"us-central1"}]}
+[info] i  === Import a GitHub repository 
+[debug] [2024-07-30T21:15:18.436Z] >>> [apiv2][query] GET https://developerconnect.googleapis.com/v1/projects/ultwordle/locations/us-central1/connections/firebase-app-hosting-github-oauth [none]
+[debug] [2024-07-30T21:15:18.726Z] <<< [apiv2][status] GET https://developerconnect.googleapis.com/v1/projects/ultwordle/locations/us-central1/connections/firebase-app-hosting-github-oauth 200
+[debug] [2024-07-30T21:15:18.726Z] <<< [apiv2][body] GET https://developerconnect.googleapis.com/v1/projects/ultwordle/locations/us-central1/connections/firebase-app-hosting-github-oauth {"name":"projects/ultwordle/locations/us-central1/connections/firebase-app-hosting-github-oauth","createTime":"2024-07-30T21:12:01.312742141Z","updateTime":"2024-07-30T21:12:37.809918106Z","githubConfig":{"githubApp":"FIREBASE","authorizerCredential":{"oauthTokenSecretVersion":"projects/ultwordle/secrets/firebase-app-hosting-github-oauth-github-oauthtoken-103ef5/versions/latest","username":"Elijah-Hoffman-SHG"}},"installationState":{"stage":"PENDING_INSTALL_APP","message":"Please follow the link to install the Developer Connect GitHub App","actionUri":"https://accounts.google.com/AccountChooser?continue=https%3A%2F%2Fconsole.cloud.google.com%2Fdeveloper-connect%2Ffinish-setup%3Fstate%3D%257B%2522connection%2522%253A%2B%2522projects%252Fultwordle%252Flocations%252Fus-central1%252Fconnections%252Ffirebase-app-hosting-github-oauth%2522%257D"}}
+[info] +  Connected with GitHub successfully
+ 
+[debug] [2024-07-30T21:15:18.727Z] >>> [apiv2][query] GET https://developerconnect.googleapis.com/v1/projects/ultwordle/locations/us-central1/connections/firebase-app-hosting-github-oauth:fetchGitHubInstallations [none]
+[debug] [2024-07-30T21:15:18.980Z] <<< [apiv2][status] GET https://developerconnect.googleapis.com/v1/projects/ultwordle/locations/us-central1/connections/firebase-app-hosting-github-oauth:fetchGitHubInstallations 200
+[debug] [2024-07-30T21:15:18.980Z] <<< [apiv2][body] GET https://developerconnect.googleapis.com/v1/projects/ultwordle/locations/us-central1/connections/firebase-app-hosting-github-oauth:fetchGitHubInstallations {}
+[debug] [2024-07-30T21:15:19.223Z] TypeError: Cannot read properties of undefined (reading 'filter')
+    at listValidInstallations (C:\Users\elijah-hoffman\AppData\Roaming\npm\node_modules\firebase-tools\lib\apphosting\githubConnections.js:171:35)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async promptGitHubInstallation (C:\Users\elijah-hoffman\AppData\Roaming\npm\node_modules\firebase-tools\lib\apphosting\githubConnections.js:139:27)
+    at async Object.linkGitHubRepository (C:\Users\elijah-hoffman\AppData\Roaming\npm\node_modules\firebase-tools\lib\apphosting\githubConnections.js:60:26)
+    at async doSetup (C:\Users\elijah-hoffman\AppData\Roaming\npm\node_modules\firebase-tools\lib\apphosting\index.js:69:31)
+    at async Command.actionFn (C:\Users\elijah-hoffman\AppData\Roaming\npm\node_modules\firebase-tools\lib\commands\apphosting-backends-create.js:24:5)
+[error] 
+[error] Error: An unexpected error has occurred.
