@@ -113,7 +113,7 @@ const UltimateBoard = observer(({ store }) => {
     );
     })}
       {
-      /*store.words.map((row, rowIndex) => {
+      /*dstore.words.map((row, rowIndex) => {
         const preLength = store.startingIndexes[rowIndex];
         let selected = store.selected === rowIndex;
         const postLength = 13 - (preLength + store.letterLength);

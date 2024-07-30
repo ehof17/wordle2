@@ -368,42 +368,6 @@ class UltStore {
         return (row >= 0 && row < this.wordsGrid.length && col >= 0 && col < this.wordsGrid[0].length && !visited[row][col]);
     }
 
-    searchWord(row: number, col: number, visited: boolean[][], str: string, indexes: number[][]) {
-        let x = [-1, -1, -1, 0, 0, 1, 1, 1];
-        let y = [-1, 0, 1, -1, 1, -1, 0, 1];
-        visited[row][col] = true;
-        str = str + this.wordsGrid[row][col];
-        indexes.push([row, col]);
-
-        if (this.trie.search(str)) {
-            console.log(str);
-        }
-
-        if (this.trie.startsWith(str)) {
-            for (let dir = 0; dir < 8; dir++) {
-                let newRow = row + x[dir];
-                let newCol = col + y[dir];
-                if (this.isSafe(newRow, newCol, visited)) {
-                    this.searchWord(newRow, newCol, visited, str, indexes);
-                }
-            }
-        }
-
-        str = str.slice(0, -1);
-        indexes.pop();
-        visited[row][col] = false;
-    }
-
-    lookWords() {
-        let visited = Array(this.wordsGrid.length).fill(false).map(() => Array(this.wordsGrid[0].length).fill(false));
-        let str = '';
-        let indexes: number[][] = [];
-        for (let row = 0; row < this.wordsGrid.length; row++) {
-            for (let col = 0; col < this.wordsGrid[0].length; col++) {
-                this.searchWord(row, col, visited, str, indexes);
-            }
-        }
-    }
     init(){
         this.word = words[Math.floor(Math.random() * words.length)];
         this.guesses = new Array(6).fill('');
