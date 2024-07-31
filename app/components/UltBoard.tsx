@@ -66,8 +66,8 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
                 let bgag = store.lightningIDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex) 
                 ? "text-yellow-400" 
                 : "text-white";
-            const dhb = letter === "" ? "" : "lens-inverse";
-            const dcs = letter === "" ? "15px" : "50px";
+            const dhb = (letter === "" ) ? "" : "lens-inverse";
+            const dcs = (letter === "") ? "15px" : "50px";
             const borderColor =
             letter === ""
             ?"bg-transparent"
