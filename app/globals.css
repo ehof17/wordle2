@@ -12,6 +12,7 @@
   --bg-green-400 : #4ADE80;
   --bg-yellow-400 : #FBBF24;
   --bg-gray-800: #1F2937;
+  --bg-orange-400 : #FB923C;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,7 +20,6 @@
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
-
   }
 }
 
@@ -106,13 +106,13 @@ body {
 .guessed {
   opacity: 1;
   transform: scale(1);
-  background-color: #1F2937;
+  background-color: var(--bg-gray-800);
 }
 
 .not-guessed {
   opacity: 1;
   transform: scale(.25);
-  background-color: #1F2937;
+  background-color: var(--bg-gray-800);
 }
 .guess-anim {
   animation: flip 0.5s ease forwards, colorChange 0.5s ease forwards 0.5s;
@@ -165,7 +165,7 @@ body {
 
 @keyframes colorChangeGreen {
   0% {
-    background-color: #1F2937;
+    background-color: var(--bg-gray-800);
   }
   100% {
     background-color: var(--bg-green-400); /* Tailwind bg-green-400 */
@@ -174,7 +174,7 @@ body {
 
 @keyframes colorChangeYellow {
   0% {
-    background-color: #1F2937;
+    background-color: var(--bg-gray-800);
   }
   100% {
     background-color: var(--bg-yellow-400); /* Tailwind bg-yellow-400 */
@@ -183,10 +183,19 @@ body {
 
 @keyframes colorChangeBlack {
   0% {
-    background-color: #1F2937;
+    background-color: var(--bg-gray-800);
   }
   100% {
-    background-color: #1F2937;
+    background-color: var(--bg-gray-800);
+  }
+}
+
+@keyframes colorChangeOrange {
+  0% {
+    background-color: var(--bg-gray-800);
+  }
+  100% {
+    background-color: var(--bg-orange-400);
   }
 }
 
@@ -200,6 +209,9 @@ body {
 
 .guess-anim-black {
   animation: flip 0.5s ease forwards, colorChangeBlack 0.5s ease forwards 0.5s;
+}
+.guess-anim-orange {
+  animation: flip 0.5s ease forwards, colorChangeOrange 0.5s ease forwards 0.5s;
 }
 
 .guessed-row > .guessed:nth-child(2) {

@@ -1,5 +1,4 @@
 export default function Guess({isGuessed, guess, word}) {
-    console.log(`guess: ${guess}`);
     return (
         <div className={`grid grid-cols-5 gap-2 mb-2 ${isGuessed ? 'guessed-row' : 'not-guessed-row'}`}>
             {new Array(5).fill(0).map((_, i) => {

@@ -5,6 +5,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBolt } from '@fortawesome/free-solid-svg-icons';
 import MouseFollower from './MouseFollow';
 import UltStore from '../stores/UltStore';
+import EndScreen from './EndScreen';
+import { useEffect, useState } from 'react';
+import { fetchScores } from '../lib/firebase';
+import MiniGrid from './MiniGrid';
+import MiniGridContainer from './MiniGridContainer';
 
 interface UltimateBoardProps {
   store: UltStore; 
@@ -22,13 +27,34 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
             />
         );
     }
+    const [scores, setScores] = useState([]);
+    const [weird, setWeird] = useState(false);
     const handleMouseOver = () => {
         document.documentElement.style.setProperty('--circle-size', '50px');
       };
+      const handleWeirdButton = () => {
+        // TODO: Check the columns with this button,
+        // Maybe save the board state and have the boxes saved below in a form of their guesses
+        store.saveBoardState()
+        setWeird(true);
+        setTimeout(() => {
+            setWeird(false);
+        }, 10000);
+    }
     
       const handleMouseOut = () => {
         document.documentElement.style.setProperty('--circle-size', '15px');
       };
+
+      useEffect(() => {
+        const fetchAndSetScores = async () => {
+          const fetchedScores = await fetchScores();
+          const sortedScores = fetchedScores.sort((a, b) => b.score - a.score);
+          setScores(sortedScores);
+        };
+      
+        fetchAndSetScores();
+      }, []);
   
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center bg-gray-600">
@@ -58,7 +84,7 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
     return (
         <div key={`wordsGrid-${rowIndex}`} className="bg-green">
          
-        <div className="grid" style={{ gridTemplateColumns: "repeat(13, minmax(0, 1fr))" }}>
+        <div className="grid guessed-row" style={{ gridTemplateColumns: "repeat(13, minmax(0, 1fr))" }}>
         
             {
             
@@ -74,8 +100,18 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
             : rowIndex == store.selected
             ? "bg-blue-400"
             : "";
-
-          
+            const animationDelay = `${rowIndex * 0.2 }s`;
+            let animationClass = "a";
+            if (weird){
+                if (store.red2IDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex)) {
+                    animationClass = "guess-anim-red";
+                }
+                if (store.orange2IDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex)) {
+                    animationClass = "guess-anim-orange";
+                }
+                if (store.yellow2IDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex)) {
+                    animationClass = "guess-anim-yellow";}
+            }
             
             
             const backgroundColor = 
@@ -83,10 +119,8 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
             ?"bg-transparent"
             : store.red2IDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex)
             ? "bg-red-400"
-            : store.orange2IDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex)
-            ? "bg-orange-400"
-            : store.yellow2IDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex)
-            ? "bg-yellow-400"
+          
+         
             : rowIndex == store.selected
             ? "bg-blue-400"
             : "bg-transparent";
@@ -105,10 +139,11 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
                 key={`wordsGrid-${rowIndex}-${colIndex}`}
                 data-hover-behavior={dhb}
                 data-circle-size={dcs}
-                className={`h-8 w-8 border-2 ${borderColor} ${backgroundColor} ${bgag} font-bold uppercase flex items-center justify-center`}
+                className={`h-8 w-8 border-2  ${animationClass} ${borderColor} ${backgroundColor} ${bgag} font-bold uppercase flex items-center justify-center`}
                 onMouseEnter={handleMouseOver}
                 onMouseLeave={handleMouseOut}
                 onClick={action(() => {store.tryAddLightning([rowIndex, colIndex])})}
+                style={{ animationDelay }}
                 >
                 {letter}
                 </div>
@@ -171,6 +206,11 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
       <button className="bg-blue-400" onClick={action(e => { store.submitCol() })}>
         Submit
       </button>
+      <button onClick={handleWeirdButton}>CheckColumn</button>
+      <div></div>
+      <MiniGridContainer guesses={store.boardGuesses} />
+      
+      {store.done && <EndScreen store={store} scoresList={scores} />}
     </div>
   );
 });

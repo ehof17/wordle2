@@ -1,6 +1,7 @@
 import { get } from "http";
 import words from '../../words.json';
 import { makeAutoObservable } from "mobx";
+
 class PuzzleStore {
     word= '';
     guesses= [];
@@ -43,14 +44,15 @@ class PuzzleStore {
 
     }
 
-    init(){
-        this.word = words[Math.floor(Math.random() * words.length)];
+    init(word){
+        if (word){
+            this.word = word;
+        }
+        else{
+            this.word = words[Math.floor(Math.random() * words.length)];
+        }
         this.guesses = new Array(6).fill('');
         this.currentGuess = 0;
-        console.log('init called')
-        console.log(this.word)
-        console.log(this.guesses)
-        console.log(this.currentGuess)
         
     }
     submitGuess(){
@@ -60,7 +62,6 @@ class PuzzleStore {
        
     }
     handleKeyUp(e){
-        console.log(this.word, this.guesses, this.currentGuess, e.key);
         if (this.won || this.lost){
         return;
     }

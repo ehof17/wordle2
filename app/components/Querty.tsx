@@ -8,7 +8,6 @@ interface QuertyProps {
   export default observer(function Querty({store}: QuertyProps) {
       const querty = ["qwertyuiop", "asdfghjkl", "zxcvbnm"];
       const handleLetterClick = (letter: string) => {
-          console.log(store.word, store.guesses, store.currentGuess, letter);
           if (store.won || store.lost){
               return;
           }

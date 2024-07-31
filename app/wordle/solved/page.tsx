@@ -22,10 +22,12 @@ const WordlePage = () => {
     new PuzzleStore()
   ]);
   const UltStory = useLocalObservable(() => new UltStore());
-
+  const words = ['a', 'b', 'c', 'd', 'e'];
   useEffect(() => {
     UltStory.init();
-    stores.forEach(store => store.init());
+    stores.forEach((store, index) => {
+    store.init()
+  })
     stores.map((store, index) => {
       UltStory.words[index] = store.word;
       UltStory.wordsGrid[index] = Array(4).fill("").concat(store.word.split(''), Array(4).fill(""));
