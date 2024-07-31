@@ -16,12 +16,14 @@ const Wordle = observer(({store}:WordleProps) => {
      
       
       {store.guesses.map((_, i) => (
-        <Guess 
-        key={i}
-        word ={store.word}
-        guess={store.guesses[i]} 
-        isGuessed={i < store.currentGuess}/>))
-      }
+    <Guess 
+      key={i}
+      word={store.word}
+      guess={store.guesses[i]} 
+      isGuessed={i < store.currentGuess}
+
+    />
+  ))}
       <Querty store = {store}/>
     word: {store.word}
     guesses: {JSON.stringify(store.guesses)}

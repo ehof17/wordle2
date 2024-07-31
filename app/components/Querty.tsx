@@ -6,6 +6,15 @@ interface QuertyProps {
 }
 export default observer(function Querty({store}: QuertyProps) {
     const querty = ["qwertyuiop", "asdfghjkl", "zxcvbnm"];
+    const handleLetterClick = (letter: string) => {
+        console.log(store.word, store.guesses, store.currentGuess, letter);
+        if (store.won || store.lost){
+            return;
+        }
+        if (store.guesses[store.currentGuess].length < 5 && letter.match(/^[A-z]$/)){
+            store.guesses[store.currentGuess] += letter.toLowerCase();
+        }
+    }
     return (
         <div>
             {querty.map((row, rowIndex) => (
@@ -19,7 +28,7 @@ export default observer(function Querty({store}: QuertyProps) {
                         ? 'bg-gray-400'
                         : 'bg-gray-200';
                         return (
-                            <div key={`${rowIndex}-${letterIndex}`} className={`m-px w-10 h-10 ${bgColor} rounded-md flex items-center justify-center uppercase`}>
+                            <div key={`${rowIndex}-${letterIndex}`} className={`m-px w-10 h-10 ${bgColor} rounded-md flex items-center justify-center uppercase`} onClick={() => handleLetterClick(letter)}>
                                 {letter}
                             </div>
                         );

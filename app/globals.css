@@ -98,3 +98,28 @@ body {
   backdrop-filter: invert(1);
 
 }
+
+
+.guessed {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.not-guessed {
+  opacity: 1;
+  transform: scale(.25);
+}
+.guess-anim {
+  animation: scale 0.5s;
+}
+@keyframes scale {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
