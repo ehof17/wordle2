@@ -110,8 +110,9 @@ body {
   transform: scale(.25);
 }
 .guess-anim {
-  animation: scale 0.5s;
+  animation: scale 0.5s, colorChange 0.5s 0.5s forwards;
 }
+
 @keyframes scale {
   0% {
     transform: scale(1);
@@ -121,5 +122,17 @@ body {
   }
   100% {
     transform: scale(1);
+  }
+}
+
+@keyframes colorChange {
+  0% {
+    background-color:   black
+  }
+  50% {
+    background-color: black;
+  }
+  100% {
+    background-color: none; /* This will inherit the bgColor set in JSX */
   }
 }
