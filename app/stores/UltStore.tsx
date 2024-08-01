@@ -304,7 +304,6 @@ class UltStore {
     sol = new Solution();
     score = 0;
     yellow2IDX = [[-1,-1]];
-    orange2IDX = [[-1,-1]];
     red2IDX = [[-1,-1]];
     wordsGrid: string[][] = [
         ["","","","","t", "r", "i", "a", "d","","","",""],
@@ -721,7 +720,8 @@ class UltStore {
             }
         }
         this.yellow2IDX = yellow;
-        this.orange2IDX = orange;
+
+        this.orangeIDX = orange;
         this.red2IDX = red;
         this.yellowIDX = yellow;
     }
