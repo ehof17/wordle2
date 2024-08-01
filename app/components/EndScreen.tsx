@@ -64,7 +64,7 @@ const EndScreen = ({ store,scoresList }) => {
           Submit Score
         </button>
         <div className="mt-4">
-          <h2 className="text-xl font-bold text-gray-700">Today's Scores</h2>
+          <h2 className="text-xl font-bold text-gray-700">Today&apos;s Scores</h2>
           <ul className="text-left text-gray-700">
             {scoresList.map((score, index) => (
               <li key={index}>{score.name}: {score.score}</li>

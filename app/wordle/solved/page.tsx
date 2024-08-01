@@ -26,7 +26,7 @@ const WordlePage = () => {
   useEffect(() => {
     UltStory.init();
     stores.forEach((store, index) => {
-    store.init()
+    store.init("")
   })
     stores.map((store, index) => {
       UltStory.words[index] = store.word;
