@@ -199,9 +199,14 @@ body {
   }
 }
 
+
+body{
+  touch-action: none;
+}
 .guess-anim-green {
   animation: flip 0.5s ease forwards, colorChangeGreen 0.5s ease forwards 0.5s;
 }
+
 
 .guess-anim-yellow {
   animation: flip 0.5s ease forwards, colorChangeYellow 0.5s ease forwards 0.5s;

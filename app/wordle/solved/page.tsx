@@ -52,6 +52,7 @@ const WordlePage = () => {
     onSwipedRight: () => UltStory.handleKeyUp({ key: 'd' }),
     onSwipedUp: () => UltStory.handleKeyUp({ key: 'w' }),
     onSwipedDown: () => UltStory.handleKeyUp({ key: 's' }),
+  
   });
   useEffect(() => {
     const disposers = stores.map(store =>
