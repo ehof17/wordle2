@@ -80,8 +80,7 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
       return (
         <div className="flex h-screen w-screen flex-col items-center justify-center bg-gray-600">
           <h1 className="text-6xl font-bold uppercase text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-green-400">
-            Ultimate Wordle {store.solution}
-            {store.lightningIDX}
+           
             <div className="flex">
                 {icons}
             </div>
@@ -95,7 +94,6 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
             </div>
             </>
           )}
-          <p>{store.solutions && store.solutions.join(', ')}</p>
           <h3>Score: {store.score}</h3>
           {store.wordsGrid.map((row, rowIndex) => {
             const swipeHandlers = useSwipeable({
@@ -113,12 +111,13 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
                     let bgag = store.lightningIDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex) 
                       ? "text-yellow-400" 
                       : "text-white";
-                    const dhb = (letter === "" ) ? "" : "lens-inverse";
-                    const dcs = (letter === "") ? "15px" : "50px";
+                    const dhb = (letter === "" || !store.lightningEnabled ) ? "" : "lens-inverse";
+                    const dcs = (letter === "" || !store.lightningEnabled) ? "15px" : "50px";
                     const borderColor = letter === "" ? "" : "border-2";
                     const animationDelay = `${rowIndex * 0.2}s`;
                     let animationClass = "a";
-                    if (weird) {
+                  
+                    if (store.showColors || store.cheatToggled) {
                       if (store.red2IDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex)) {
                         animationClass = "guess-anim-red";
                       }
@@ -132,8 +131,6 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
                     
                     const backgroundColor = letter === ""
                       ? "bg-transparent"
-                      : store.red2IDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex)
-                      ? "bg-red-400"
                       : rowIndex == store.selected
                       ? "bg-blue-400"
                       : "bg-transparent";

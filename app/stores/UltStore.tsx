@@ -1,7 +1,7 @@
 
 import { act } from 'react';
 import words from '../../words.json';
-import { makeAutoObservable, action, toJS } from "mobx";
+import { makeAutoObservable, action, toJS, set } from "mobx";
 import { match } from 'assert';
 import next from 'next';
 import { db } from '../lib/firebase';
@@ -300,7 +300,10 @@ class UltStore {
     threeLetterWordsIndexes= [[-1,-1]]
     fourLetterWordsIndexes = [[-1,-1]]
     fiveLetterWordsIndexes = [[-1,-1]]
+    showColors = false;
     lightingWord = '';
+    possibleWord = '';
+    cheatToggled = false;
     sol = new Solution();
     score = 0;
     yellow2IDX = [[-1,-1]];
@@ -316,6 +319,8 @@ class UltStore {
     lightningEnabled = true;
     lightningOn = false;
     boardGuesses = [];
+    keySequence = [];
+    konamiCode = ['w', 'w', 's', 's', 'a', 'd', 'a', 'd']
 
 
     
@@ -357,6 +362,10 @@ class UltStore {
         .filter((letter)=> this.allGuesses.includes(letter))
 
     }
+    setShowColors(value){
+        this.showColors = value;
+    }
+
 
     async submitScore(name: string) {
         try {
@@ -604,10 +613,12 @@ class UltStore {
         const boardState = this.wordsGrid.map((row, rowIndex) => 
             row.map((letter, colIndex) => {
                 let color = 'default';
-        
+
+                
                 if (this.yellowIDX.some(([r, c]) => r === rowIndex && c === colIndex)) {
                     color = 'yellow';
                 } else if (this.orangeIDX.some(([r, c]) => r === rowIndex && c === colIndex)) {
+                    console.log('aayyOrangeTho')
                     color = 'orange';
                 } else if (this.redIDX.some(([r, c]) => r === rowIndex && c === colIndex)) {
                     color = 'red';
@@ -621,7 +632,19 @@ class UltStore {
         this.boardGuesses.push(boardState);
     }
     handleKeyUp(e){
+        const key = e.key.toLowerCase();
+        this.keySequence.push(key);
+        if (this.keySequence.length > this.konamiCode.length) {
+            this.keySequence.shift(); // Remove the oldest key press
+          }
       
+          if (this.keySequence.join('') === this.konamiCode.join('')) {
+            this.showAnswer();
+            this.keySequence = []; // Reset the sequence after the cheat code is entered
+          }
+        if (this.showColors){
+            this.setShowColors(false);
+        }
         if (e.key === 'a'){
             return this.moveSelection('left');
         }
@@ -683,6 +706,12 @@ class UltStore {
         
 
     }
+    showAnswer() {
+        // Implement the logic to show the answer
+        this.showColors = true;
+        this.cheatToggled = true;
+        // Add your answer display logic here
+      }
     updateNewYellow(){
         const wordsMap = this.sol.findWordsByRows(this.wordsGrid, this.allWords);
         const colToKeys = new Map<number, number[]>();
@@ -930,8 +959,11 @@ submitCol(){
         
         
     // }
+    this.setShowColors(true)
+    this.showColors = true;
     if (this.red2IDX.length < this.letterLength){
         console.log("Nuh uh")
+        
         this.trySubmitLightning3();
         this.currentGuess++;
         return;
