@@ -1,15 +1,12 @@
 'use client'; 
-import Link from 'next/link';
-import {usePathname} from 'next/navigation';
-
 import React, { useEffect, useState } from "react";
-import Wordle from "../../components/Wordle";
+
 import { useLocalObservable, Observer } from "mobx-react-lite";
 import PuzzleStore from "../../stores/PuzzleStore";
 import UltimateBoard from '../../components/UltBoard';
 import UltStore from "../../stores/UltStore";
 import TitleScreen from '../../components/TitleScreen';
-import { useSwipeable } from 'react-swipeable';
+
 import { reaction } from 'mobx';
 
 const WordlePage = () => {
@@ -47,13 +44,7 @@ const WordlePage = () => {
       window.removeEventListener('keyup', handleKeyUp);
     };
   }, [activeStoreIndex, stores, all_stores_won]);
-  const swipeHandlers = useSwipeable({
-    onSwipedLeft: () => UltStory.handleKeyUp({ key: 'a' }),
-    onSwipedRight: () => UltStory.handleKeyUp({ key: 'd' }),
-    onSwipedUp: () => UltStory.handleKeyUp({ key: 'w' }),
-    onSwipedDown: () => UltStory.handleKeyUp({ key: 's' }),
-  
-  });
+
   useEffect(() => {
     const disposers = stores.map(store =>
       reaction(
@@ -107,7 +98,7 @@ return (
         </div>
         <div>
           { (
-            <div {...swipeHandlers}className='flex items-center justify-evenly'>
+            <div className='flex items-center justify-evenly'>
               <TitleScreen />
               <UltimateBoard store={UltStory} />
             </div>

@@ -539,8 +539,9 @@ class UltStore {
     }
     tryAddLightning(index: number[]) {
         // Check if lightning is enabled
-        if (!this.lightningEnabled) {
+        if (!this.lightningEnabled || this.sol.skip === 0) {
             console.log('lightning is not enabled');
+            this.selected = index[0];
             return;
         }
     
@@ -620,7 +621,7 @@ class UltStore {
         this.boardGuesses.push(boardState);
     }
     handleKeyUp(e){
-       
+      
         if (e.key === 'a'){
             return this.moveSelection('left');
         }
@@ -947,7 +948,7 @@ submitCol(){
     this.wordsGrid = wordsGridCopy;
 
     this.sol.skip++;
-    this.lightningEnabled = true;
+    this.lightningEnabled = false;
     //this.words = wordsCopy;
     this.letterLength--;
     this.currentGuess++;
