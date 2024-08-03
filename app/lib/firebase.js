@@ -39,12 +39,12 @@ console.log(process.env.NEXT_PUBLIC_FIREBASE_API_KEY)
 const firebaseConfig = {
   
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+  authDomain: "wordle-5x5.firebaseapp.com",
+  projectId: "wordle-5x5",
+  storageBucket: "wordle-5x5.appspot.com",
+  messagingSenderId: "684375759874",
+  appId: "1:684375759874:web:e11025f57ef8b2ac2d5b1b",
+  measurementId: "G-RHFNRJDMEX"
 };
 
 const app = initializeApp(firebaseConfig);
