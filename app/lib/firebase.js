@@ -46,10 +46,11 @@ const firebaseConfig = {
   appId: "1:684375759874:web:e11025f57ef8b2ac2d5b1b",
   measurementId: "G-RHFNRJDMEX"
 };
-
+console.log(firebaseConfig)
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app); // Initialize Firestore
+
 const fetchScores = async () => {
 
     const today = new Date();
