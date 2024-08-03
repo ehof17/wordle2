@@ -1,23 +1,23 @@
 # Environment variables and secrets
 env:
--   variable: STORAGE_BUCKET
+  - variable: STORAGE_BUCKET
     value: mybucket.appspot.com
     availability:
-    -   BUILD
-    -   RUNTIME
+      - BUILD
+      - RUNTIME
 
   - variable: API_KEY
     secret: myApiKeySecret
 
-    # Same as API_KEY above but with a pinned version.
+  # Same as API_KEY above but with a pinned version.
   - variable: PINNED_API_KEY
     secret: myApiKeySecret@5
 
-    # Same as API_KEY above but with the long form secret reference as defined by Cloud Secret Manager.
+  # Same as API_KEY above but with the long form secret reference as defined by Cloud Secret Manager.
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
     secret: projects/684375759874/secrets/NEXT_PUBLIC_FIREBASE_API_KEY
 
-    # Same as API_KEY above but with the long form secret reference with pinned version.
+  # Same as API_KEY above but with the long form secret reference with pinned version.
   - variable: PINNED_VERBOSE_API_KEY
     secret: projects/test-project/secrets/secretID/versions/5
 
@@ -26,4 +26,3 @@ env:
     
   - variable: smallTest
     secret: Pigs
-
