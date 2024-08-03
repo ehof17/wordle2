@@ -1,7 +1,24 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore,  collection, getDocs, query, where } from "firebase/firestore"; // Import Firestore
+const { SecretManagerServiceClient } = require('@google-cloud/secret-manager');
+async function accessSecretVersion(name) {
+  const client = new SecretManagerServiceClient();   
 
+  const [version] = await client.accessSecretVersion({
+      name: name,
+  });
+  const payload = version.payload.data.toString('utf8');
+  return payload;
+}
+const secretName = 'projects/684375759874/secrets/NEXT_PUBLIC_FIREBASE_API_KEY';
+async function getFirebaseConfig() {
+  const apiKey = await accessSecretVersion(secretName);
+  console.log("We built this city.... Yeah We built ths city")
+  console.log(apiKey)
+  
+  return firebaseConfig;
+}
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
