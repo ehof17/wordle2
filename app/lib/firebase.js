@@ -19,16 +19,18 @@ import { getFirestore,  collection, getDocs, query, where } from "firebase/fires
 
 //   return firebaseConfig;
 // }
+console.log('process.env.Pigs')
 console.log(process.env.Pigs)
+console.log('process.env.er')
 console.log(process.env.er)
+console.log('process.env.bigTest')
 console.log(process.env.bigTest)
+console.log('process.env.smallTest')
 console.log(process.env.smallTest)
-console.log(process.env.STORAGE_BUCKET)
+
 console.log("Did we build the city on rock and roll?")
 console.log(process.env.NEXT_PUBLIC_FIREBASE_API_KEY)
 
-console.log(env.Pigs)
-console.log(env.er)
 console.log(process.env.bigTest)
 console.log(process.env.smallTest)
 console.log(process.env.STORAGE_BUCKET)
