@@ -29,6 +29,7 @@ const WordlePage = () => {
     stores.map((store, index) => {
       UltStory.words[index] = store.word;
       UltStory.wordsGrid[index] = Array(4).fill("").concat(store.word.split(''), Array(4).fill(""));
+      UltStory.wordsGrid2[index] = Array(4).fill("").concat(store.word.split(''), Array(4).fill(""));
     });
   }, []);
 

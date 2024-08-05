@@ -315,6 +315,13 @@ class UltStore {
         ["","","","","a", "u", "g", "h", "t","","","",""],
         ["","","","","t", "a", "s", "t", "e","","","",""]
       ];
+      wordsGrid2: string[][] = [
+        ["","","","","t", "r", "i", "a", "d","","","",""],
+        ["","","","","p", "l", "e", "b", "e","","","",""],
+        ["","","","","f", "o", "x", "e", "s","","","",""],
+        ["","","","","a", "u", "g", "h", "t","","","",""],
+        ["","","","","t", "a", "s", "t", "e","","","",""]
+      ];
       allWords = words;
     lightningEnabled = true;
     lightningOn = false;
@@ -692,6 +699,8 @@ class UltStore {
                     yellow.push([row, key]);
                 }
             }
+            console.log("Ay so we gone now")
+            console.log(yellow)
             
            
            
@@ -975,7 +984,7 @@ submitCol(){
         const score = this.calculateWordScore(letter);
         this.score += score;
 
-        wordsGridCopy[row][col] = "";
+    
     }
     this.wordsGrid = wordsGridCopy;
 
@@ -984,6 +993,7 @@ submitCol(){
     //this.words = wordsCopy;
     this.letterLength--;
     this.currentGuess++;
+    this.saveBoardState();
     this.checkForYellow();
     this.findSolution();
     

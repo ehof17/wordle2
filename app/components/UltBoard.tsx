@@ -95,7 +95,7 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
             </>
           )}
           <h3>Score: {store.score}</h3>
-          {store.wordsGrid.map((row, rowIndex) => {
+          {store.wordsGrid2.map((row, rowIndex) => {
             const swipeHandlers = useSwipeable({
               onSwipedLeft: () => handleSwipe(rowIndex, 'LEFT'),
               onSwipedRight: () => handleSwipe(rowIndex, 'RIGHT'),
@@ -103,10 +103,12 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
               onSwipedDown: () => handleSwipe(rowIndex, 'DOWN'),
            
             });
+            const rowMovement = ((store.startingIndexes[rowIndex] -4));
+            const movement = `translateX(${rowMovement*2}rem)`;
             let started = [false, false, false, false, false];
             return (
               <div key={`wordsGrid-${rowIndex}`} className="bg-green" {...swipeHandlers}>
-                <div className="grid guessed-row" style={{ gridTemplateColumns: "repeat(13, minmax(0, 1fr))" }}>
+                <div className="grid guessed-row" style={{ gridTemplateColumns: "repeat(13, minmax(0, 1fr))", transform: movement, transition: 'transform .3s ease-in-out' }}>
                   {row.map((letter, colIndex) => {
                     let bgag = store.lightningIDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex) 
                       ? "text-yellow-400" 
@@ -118,13 +120,13 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
                     let animationClass = "a";
                   
                     if (store.showColors || store.cheatToggled) {
-                      if (store.red2IDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex)) {
+                      if (store.red2IDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex +rowMovement )) {
                         animationClass = "guess-anim-red";
                       }
-                      if (store.orangeIDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex)) {
+                      if (store.orangeIDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex +rowMovement)) {
                         animationClass = "guess-anim-orange";
                       }
-                      if (store.yellow2IDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex)) {
+                      if (store.yellow2IDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex+rowMovement) ) {
                         animationClass = "guess-anim-yellow";
                       }
                     }
