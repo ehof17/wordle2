@@ -127,7 +127,7 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
                       if (store.orangeIDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex +rowMovement)) {
                         animationClass = "guess-anim-orange";
                       }
-                      if (store.yellow2IDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex+rowMovement) ) {
+                      if (store.yellowIDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex+rowMovement) ) {
                         animationClass = "guess-anim-yellow";
                       }
                     }
@@ -169,7 +169,6 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
       <button className="bg-blue-400" onClick={action(e => { store.submitCol() })}>
         Submit
       </button>
-      <button onClick={handleWeirdButton}>CheckColumn</button>
       <div></div>
       <MiniGridContainer guesses={store.boardGuesses} />
       

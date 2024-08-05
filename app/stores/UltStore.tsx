@@ -347,7 +347,7 @@ class UltStore {
     showColors = false;
     lightingWord = '';
     possibleWord = '';
-    cheatToggled = true;
+    cheatToggled = false;
     sol = new Solution();
     score = 0;
     yellow2IDX = [[-1,-1]];
@@ -1130,10 +1130,9 @@ submitCol(){
     // }
     this.setShowColors(true)
     this.showColors = true;
+    this.trySubmitLightning3();
     if (this.red2IDX.length < this.letterLength){
-        console.log("Nuh uh")
-        
-        this.trySubmitLightning3();
+        this.saveBoardState();
         this.currentGuess++;
         return;
     }
@@ -1151,11 +1150,12 @@ submitCol(){
     this.sol.skip++;
     this.lightningEnabled = false;
     //this.words = wordsCopy;
+    this.saveBoardState();
     this.letterLength--;
     this.currentGuess++;
-    this.saveBoardState();
-    this.checkForYellow();
-    this.findSolution();
+    
+    //this.checkForYellow();
+    //this.findSolution();
     
 }
    
