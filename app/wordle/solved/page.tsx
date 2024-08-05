@@ -20,18 +20,22 @@ const WordlePage = () => {
     new PuzzleStore()
   ]);
   const UltStory = useLocalObservable(() => new UltStore());
-  const words = ['a', 'b', 'c', 'd', 'e'];
+  const words = ['whish', 'feuds', 'motif', 'flaky', 'mogul'];
+  
   useEffect(() => {
     UltStory.init();
     stores.forEach((store, index) => {
-    store.init("")
-  })
+        store.init("")
+    })
     stores.map((store, index) => {
-      UltStory.words[index] = store.word;
-      UltStory.wordsGrid[index] = Array(4).fill("").concat(store.word.split(''), Array(4).fill(""));
-      UltStory.wordsGrid2[index] = Array(4).fill("").concat(store.word.split(''), Array(4).fill(""));
+        UltStory.words[index] = store.word;
+        UltStory.wordsGrid[index] = Array(4).fill("").concat(store.word.split(''), Array(4).fill(""));
+        UltStory.wordsGrid2[index] = Array(4).fill("").concat(store.word.split(''), Array(4).fill(""));
     });
-  }, []);
+
+  
+    UltStory.MakeSolvable();
+}, []);
 
   useEffect(() => {
     const handleKeyUp = (e) => {

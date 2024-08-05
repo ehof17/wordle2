@@ -164,7 +164,50 @@ class Solution {
         visit.delete(r + ',' + c);
         positions.pop();
     }
+    isBoardSolvable(board, words) {
+        const root = new TrieNode();
+    
+        // Add all words to the Trie
+        for (const w of words) {
+            root.addWord2(w);
+        }
+    
+        this.ROWS = board.length;
+        this.COLS = board[0].length;
+    
+        // Check each column
+        for (let c = 0; c < this.COLS; c++) {
+            if (this.checkColumnForSolvable(c, root, board)) {
+                return true;
+            }
+        }
+    
+        // If no column is solvable, return false
+        return false;
+    }
+    
+    checkColumnForSolvable(c, root, board) {
+        let word = '';
+    
+        // Construct the word from top to bottom in the column
+        for (let r = 0; r < this.ROWS; r++) {
+            if (!root.children[board[r][c]]) {
+                return false;
+            }
+    
+            word += board[r][c];
+            console.log(word)
+    
+            // If the constructed word is a valid word, return true
+            if (root.children[board[r][c]].isWord) {
 
+                return true;
+            }
+        }
+    
+        // If the constructed word is not a valid word, return false
+        return false;
+    }
     findWordsByRows(board, words) {
         const res = new Map();
         const root = new TrieNode();
@@ -184,6 +227,7 @@ class Solution {
         // return Array.from(res.entries());
         return wordsMap;
     }
+    
 
     checkColumn(c, root, board, res, targetWords, wordsMap) {
         let word = '';
@@ -303,24 +347,24 @@ class UltStore {
     showColors = false;
     lightingWord = '';
     possibleWord = '';
-    cheatToggled = false;
+    cheatToggled = true;
     sol = new Solution();
     score = 0;
     yellow2IDX = [[-1,-1]];
     red2IDX = [[-1,-1]];
     wordsGrid: string[][] = [
-        ["","","","","t", "r", "i", "a", "d","","","",""],
-        ["","","","","p", "l", "e", "b", "e","","","",""],
-        ["","","","","f", "o", "x", "e", "s","","","",""],
-        ["","","","","a", "u", "g", "h", "t","","","",""],
-        ["","","","","t", "a", "s", "t", "e","","","",""]
+        ["","","","","w", "h", "i", "s", "h","","","",""],
+        ["","","","","f", "e", "u", "d", "s","","","",""],
+        ["","","","","m", "o", "i", "i", "f","","","",""],
+        ["","","","","f", "l", "a", "k", "y","","","",""],
+        ["","","","","m", "o", "g", "u", "l","","","",""]
       ];
       wordsGrid2: string[][] = [
-        ["","","","","t", "r", "i", "a", "d","","","",""],
-        ["","","","","p", "l", "e", "b", "e","","","",""],
-        ["","","","","f", "o", "x", "e", "s","","","",""],
-        ["","","","","a", "u", "g", "h", "t","","","",""],
-        ["","","","","t", "a", "s", "t", "e","","","",""]
+        ["","","","","w", "h", "i", "s", "h","","","",""],
+        ["","","","","f", "e", "u", "d", "s","","","",""],
+        ["","","","","m", "o", "i", "i", "f","","","",""],
+        ["","","","","f", "l", "a", "k", "y","","","",""],
+        ["","","","","m", "o", "g", "u", "l","","","",""]
       ];
       allWords = words;
     lightningEnabled = true;
@@ -368,6 +412,17 @@ class UltStore {
         .split('')
         .filter((letter)=> this.allGuesses.includes(letter))
 
+    }
+    ValidateSolvable(){
+        let wordsWithPositions = this.sol.findWords(this.wordsGrid, this.allWords)
+        .filter(([word, positions]) => !this.words.includes(word));
+        console.log(wordsWithPositions)
+        const wordsEachLetterInDifferentRow = wordsWithPositions.filter(([word, positions]) => {
+            const rows = positions.map(([row, col]) => row);
+            return new Set(rows).size === 5;
+        });
+        console.log(wordsEachLetterInDifferentRow)
+        console.log("Does this")
     }
     setShowColors(value){
         this.showColors = value;
@@ -627,7 +682,7 @@ class UltStore {
                 } else if (this.orangeIDX.some(([r, c]) => r === rowIndex && c === colIndex)) {
                     console.log('aayyOrangeTho')
                     color = 'orange';
-                } else if (this.redIDX.some(([r, c]) => r === rowIndex && c === colIndex)) {
+                } else if (this.red2IDX.some(([r, c]) => r === rowIndex && c === colIndex)) {
                     color = 'red';
                 }
         
@@ -665,7 +720,10 @@ class UltStore {
             return this.changeSelected('up');
         }
         if(e.key == 'Enter'){
+            console.log(this.sol.isBoardSolvable(this.wordsGrid, this.allWords));
             console.log('enter the fragon')
+
+            this.ValidateSolvable();
             // let splitGrid = this.wordsGrid.map(row => row.slice(4, 9));
             // splitGrid = this.wordsGrid
             // let wordsWithPositions = this.sol.findWords(splitGrid, this.allWords)
@@ -701,6 +759,20 @@ class UltStore {
             }
             console.log("Ay so we gone now")
             console.log(yellow)
+            console.log(yellow.length)
+            if (yellow.length ===0){
+                console.log('Maybe Try re ordering the words?')
+                const row1 = this.wordsGrid[0];
+                const row2 = this.wordsGrid[1];
+                const row3 = this.wordsGrid[2];
+                const row4 = this.wordsGrid[3];
+                const row5 = this.wordsGrid[4];
+                const newGrid = [row5, row4, row3, row2, row1];
+                this.wordsGrid = newGrid;
+                this.wordsGrid2 = newGrid;
+                console.log(this.wordsGrid)
+                console.log(this.wordsGrid2)
+            }
             
            
            
@@ -709,12 +781,28 @@ class UltStore {
         if (e.key === 'Backspace'){
            return this.findSolution();
         }
+        if(e.key === 'l'){
+            return this.MakeSolvable();
+        }
         
    
        
         
 
     }
+    MoveBoardDown(index) {
+        // Create a deep copy of this.wordsGrid and rotate the rows
+        let SWAGG = [...this.wordsGrid.slice(index), ...this.wordsGrid.slice(0, index)].map(row => [...row]);
+        let SWAGG2 = [...this.wordsGrid.slice(index), ...this.wordsGrid.slice(0, index)].map(row => [...row]);
+    
+    
+        // Create deep copies of SWAGG for this.wordsGrid and this.wordsGrid2
+        this.wordsGrid = SWAGG.map(row => [...row]);
+        this.wordsGrid2 = SWAGG2.map(row => [...row]);
+    
+    
+    }
+
     showAnswer() {
         // Implement the logic to show the answer
         this.showColors = true;
@@ -826,33 +914,35 @@ class UltStore {
         this.solutions = [];
         const STARTINGLETTER = 0
         const STARTINGWORD = 0
+      
+        console.log("something has happened")
         for (let q = 0; q < 5; q++){
         // For each letter in every word, check the other words and see if a letter matches a word in the given words.
         const firstLetter =this.words[STARTINGWORD][q];
 
         const wordsStartingWithFirstLetter = words.filter(word => new RegExp(`^${firstLetter}`, 'i').test(word));
        
-        
+        for (let STARTINGWORD = 0; STARTINGWORD < 5; STARTINGWORD++){
         // If we have words that start here, we need to check every other letter in the other words
         for (let i = 0; i < 5; i++){
-            const letterToCheck = this.words[STARTINGWORD + 1][i];
+            const letterToCheck = this.words[(STARTINGWORD + 1) % 5][i];
             const wordsStartingWithFirstTwoLetters = wordsStartingWithFirstLetter.filter(word => new RegExp(`^${firstLetter}${letterToCheck}`, 'i').test(word));
 
             if (wordsStartingWithFirstTwoLetters.length > 0){
                 for (let j = 0; j < 5; j++){
-                    const letterToCheck2 = this.words[STARTINGWORD + 2][j];
+                    const letterToCheck2 = this.words[(STARTINGWORD + 2) % 5][j];
                     const wordsStartingWithFirstThreeLetters = wordsStartingWithFirstTwoLetters.filter(word => new RegExp(`^${firstLetter}${letterToCheck}${letterToCheck2}`, 'i').test(word));
                    
 
                     if (wordsStartingWithFirstThreeLetters.length > 0){
                         for (let k = 0; k < 5; k++){
-                            const letterToCheck3 = this.words[STARTINGWORD + 3][k];
+                            const letterToCheck3 = this.words[(STARTINGWORD + 3) % 5][k];
                             const wordsStartingWithFirstFourLetters = wordsStartingWithFirstThreeLetters.filter(word => new RegExp(`^${firstLetter}${letterToCheck}${letterToCheck2}${letterToCheck3}`, 'i').test(word));
                           
                            
                             if (wordsStartingWithFirstFourLetters.length > 0){
                                 for (let l = 0; l < 5; l++){
-                                    const letterToCheck4 = this.words[STARTINGWORD + 4][l];
+                                    const letterToCheck4 = this.words[(STARTINGWORD + 4) % 5][l];
                                     const wordsStartingWithFirstFiveLetters = wordsStartingWithFirstFourLetters.filter(word => new RegExp(`^${firstLetter}${letterToCheck}${letterToCheck2}${letterToCheck3}${letterToCheck4}`, 'i').test(word));
                                     
                                   
@@ -871,9 +961,79 @@ class UltStore {
                 }
             }
           
+        }
 
-    }
+}}
 }
+MakeSolvable(){
+    this.solution = '?';
+    this.solutions = [];
+    const STARTINGLETTER = 0;
+ 
+  
+    console.log("something has happened")
+    for (let STARTINGWORD = 0; STARTINGWORD < 5; STARTINGWORD++){
+    for (let q = 0; q < 5; q++){
+    // For each letter in every word, check the other words and see if a letter matches a word in the given words.
+    const firstLetter =this.words[STARTINGWORD][q];
+
+    const wordsStartingWithFirstLetter = words.filter(word => new RegExp(`^${firstLetter}`, 'i').test(word));
+   
+    for (let STARTINGWORD = 0; STARTINGWORD < 5; STARTINGWORD++){
+    // If we have words that start here, we need to check every other letter in the other words
+    for (let i = 0; i < 5; i++){
+        const letterToCheck = this.words[(STARTINGWORD + 1) % 5][i];
+        const wordsStartingWithFirstTwoLetters = wordsStartingWithFirstLetter.filter(word => new RegExp(`^${firstLetter}${letterToCheck}`, 'i').test(word));
+
+        if (wordsStartingWithFirstTwoLetters.length > 0){
+            for (let j = 0; j < 5; j++){
+                const letterToCheck2 = this.words[(STARTINGWORD + 2) % 5][j];
+                const wordsStartingWithFirstThreeLetters = wordsStartingWithFirstTwoLetters.filter(word => new RegExp(`^${firstLetter}${letterToCheck}${letterToCheck2}`, 'i').test(word));
+               
+
+                if (wordsStartingWithFirstThreeLetters.length > 0){
+                    for (let k = 0; k < 5; k++){
+                        const letterToCheck3 = this.words[(STARTINGWORD + 3) % 5][k];
+                        const wordsStartingWithFirstFourLetters = wordsStartingWithFirstThreeLetters.filter(word => new RegExp(`^${firstLetter}${letterToCheck}${letterToCheck2}${letterToCheck3}`, 'i').test(word));
+                      
+                       
+                        if (wordsStartingWithFirstFourLetters.length > 0){
+                            for (let l = 0; l < 5; l++){
+                                const letterToCheck4 = this.words[(STARTINGWORD + 4) % 5][l];
+                                const wordsStartingWithFirstFiveLetters = wordsStartingWithFirstFourLetters.filter(word => new RegExp(`^${firstLetter}${letterToCheck}${letterToCheck2}${letterToCheck3}${letterToCheck4}`, 'i').test(word));
+                                
+                              
+                                if (wordsStartingWithFirstFiveLetters.length > 0){
+                                    this.solution = wordsStartingWithFirstFiveLetters[0];
+                                    console.log(this.solution)
+                                    console.log(STARTINGWORD)
+                                    if (STARTINGWORD === 0){
+                                        return;
+                                    }
+                                    else{
+                                    this.MoveBoardDown(STARTINGWORD);
+                                    return;
+                                    }
+                                    this.solutions = this.solutions.concat(wordsStartingWithFirstFiveLetters);
+                                }
+                            }
+                        }
+                    }
+                  
+                }
+
+
+
+            }
+        }
+        }
+      
+    }
+
+}
+}
+console.log("Oh boy. We are in trouble")
+// TODO Grab new Words or somethin
 }
 checkForYellow(){
     console.log("Skipping check for yellow")

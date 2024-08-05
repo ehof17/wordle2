@@ -104,7 +104,8 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
            
             });
             const rowMovement = ((store.startingIndexes[rowIndex] -4));
-            const movement = `translateX(${rowMovement*2}rem)`;
+            console.log(`Movement of row ${rowIndex} is ${rowMovement}`);
+            const movement = `translateX(${rowMovement*32}px)`;
             let started = [false, false, false, false, false];
             return (
               <div key={`wordsGrid-${rowIndex}`} className="bg-green" {...swipeHandlers}>

@@ -24,6 +24,9 @@ const WordlePage = () => {
   const UltStory = useLocalObservable(() => new UltStore());
 
   useEffect(() => {
+    const item = localStorage.getItem('nyt-wordle-moogle/ANON');
+    console.log(item);
+    console.log("That should have worked")
     UltStory.init();
     stores.forEach(store => store.init(""));
     stores.map((store, index) => {

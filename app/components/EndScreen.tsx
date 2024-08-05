@@ -27,7 +27,7 @@ const EndScreen = ({ store,scoresList }) => {
   };
   useEffect(() => {
     
-
+   
     const lastPlayDate = localStorage.getItem('lastPlayDate');
     const today = new Date().toISOString().split('T')[0];
 
