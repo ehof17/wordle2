@@ -5,8 +5,10 @@ import { useLocalObservable, Observer } from "mobx-react-lite";
 import PuzzleStore from "../../stores/PuzzleStore";
 import UltimateBoard from '../../components/UltBoard';
 import UltStore from "../../stores/UltStore";
-import TitleScreen from '../../components/TitleScreen';
-
+import TitleScreen from '@/app/components/TitleScreen';
+import LightningExplainer from "@/app/components/LightningExplainer";
+import Xarrow, { Xwrapper } from 'react-xarrows';
+import {useXarrow} from "react-xarrows"
 import { reaction } from 'mobx';
 
 const WordlePage = () => {
@@ -21,7 +23,7 @@ const WordlePage = () => {
   ]);
   const UltStory = useLocalObservable(() => new UltStore());
   const words = ['whish', 'feuds', 'motif', 'flaky', 'mogul'];
-  
+  const updateXarrow = useXarrow();
   useEffect(() => {
     UltStory.init();
     stores.forEach((store, index) => {
@@ -40,9 +42,9 @@ const WordlePage = () => {
   useEffect(() => {
     const handleKeyUp = (e) => {
         UltStory.handleKeyUp(e);
+        updateXarrow();
     
     };
-
     window.addEventListener('keyup', handleKeyUp);
 
     return () => {
@@ -76,9 +78,12 @@ const WordlePage = () => {
   const allStoresWon = stores.every(store => store.won);
 
 return (
+  <>
+  
   <Observer>
     {() => (
       <div>
+        <LightningExplainer />
         <div className='flex items-center justify-evenly'>
           {stores.map((store, index) => (
             <button
@@ -105,13 +110,23 @@ return (
           { (
             <div className='flex items-center justify-evenly'>
               <TitleScreen />
+              <Xwrapper>
               <UltimateBoard store={UltStory} />
+              <Xarrow
+            start={"wordsGrid-3-4"} //can be react ref
+            end="wordsGrid-0-4" //or an id
+            showHead={false} //or an id
+            
+          />
+              </Xwrapper>
+    
             </div>
           ) }
         </div>
       </div>
     )}
   </Observer>
+  </>
 );
 };
 

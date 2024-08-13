@@ -612,6 +612,8 @@ class UltStore {
         // Check if lightning is enabled
         if (!this.lightningEnabled || this.sol.skip === 0) {
             console.log('lightning is not enabled');
+            console.log(this.sol.skip)
+            console.log(this.lightningEnabled)
             this.selected = index[0];
             return;
         }
@@ -694,6 +696,8 @@ class UltStore {
         this.boardGuesses.push(boardState);
     }
     handleKeyUp(e){
+        console.log("Ayo this happened")
+        console.log(e.key)
         const key = e.key.toLowerCase();
         this.keySequence.push(key);
         if (this.keySequence.length > this.konamiCode.length) {
@@ -1036,7 +1040,6 @@ console.log("Oh boy. We are in trouble")
 // TODO Grab new Words or somethin
 }
 checkForYellow(){
-    console.log("Skipping check for yellow")
     // const yellowIDX = [];
     // this.redIDX = [];
     // this.yellowIDX = [];
@@ -1145,10 +1148,11 @@ submitCol(){
 
     
     }
+
     this.wordsGrid = wordsGridCopy;
 
     this.sol.skip++;
-    this.lightningEnabled = false;
+    this.lightningEnabled = true;
     //this.words = wordsCopy;
     this.saveBoardState();
     this.letterLength--;

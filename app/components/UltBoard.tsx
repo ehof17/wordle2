@@ -6,16 +6,25 @@ import { faBolt } from '@fortawesome/free-solid-svg-icons';
 import MouseFollower from './MouseFollow';
 import UltStore from '../stores/UltStore';
 import EndScreen from './EndScreen';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { fetchScores } from '../lib/firebase';
 import MiniGrid from './MiniGrid';
 import MiniGridContainer from './MiniGridContainer';
 import { useSwipeable } from 'react-swipeable';
+import Xarrow, { Xwrapper } from 'react-xarrows';
+import {useXarrow} from "react-xarrows"
+
+
 interface UltimateBoardProps {
   store: UltStore; 
 }
 
 const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
+  const updateXarrow = useXarrow();
+  const box1Ref = useRef(null);
+  const [arrows, setArrows] = useState([]);
+ 
+
     const icons = [];
     for (let i = 0; i < store.sol.skip; i++) {
         icons.push(
@@ -48,6 +57,7 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
       switch (direction) {
         case 'LEFT':
           store.handleKeyUp({ key: 'a' });
+          
           break;
         case 'RIGHT':
           store.handleKeyUp({ key: 'd' });
@@ -61,6 +71,7 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
         default:
           break;
       }
+      updateXarrow();
     };
     
       const handleMouseOut = () => {
@@ -78,6 +89,7 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
       }, []);
   
       return (
+        <Xwrapper>
         <div className="flex h-screen w-screen flex-col items-center justify-center bg-gray-600">
           <h1 className="text-6xl font-bold uppercase text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-green-400">
            
@@ -85,6 +97,7 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
                 {icons}
             </div>
           </h1>
+        
         
           {store.lightningEnabled && (
             <>
@@ -104,15 +117,17 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
            
             });
             const rowMovement = ((store.startingIndexes[rowIndex] -4));
-            console.log(`Movement of row ${rowIndex} is ${rowMovement}`);
+           
             const movement = `translateX(${rowMovement*32}px)`;
             let started = [false, false, false, false, false];
+            
             return (
+             
               <div key={`wordsGrid-${rowIndex}`} className="bg-green" {...swipeHandlers}>
                 <div className="grid guessed-row" style={{ gridTemplateColumns: "repeat(13, minmax(0, 1fr))", transform: movement, transition: 'transform .3s ease-in-out' }}>
                   {row.map((letter, colIndex) => {
-                    let bgag = store.lightningIDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex) 
-                      ? "text-yellow-400" 
+                    let textCol = store.lightningIDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex) 
+                      ? "text-blue-400" 
                       : "text-white";
                     const dhb = (letter === "" || !store.lightningEnabled ) ? "" : "lens-inverse";
                     const dcs = (letter === "" || !store.lightningEnabled) ? "15px" : "50px";
@@ -149,15 +164,20 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
                     return (
                       <div
                         key={`wordsGrid-${rowIndex}-${colIndex}`}
-                        
+                        id = {`wordsGrid-${rowIndex}-${colIndex}`}
                         data-hover-behavior={dhb}
                         data-circle-size={dcs}
-                        className={`h-8 w-8 ${borderColor} ${animationClass} ${backgroundColor} ${bgag} font-bold uppercase flex items-center justify-center`}
+                        className={`h-8 w-8 ${borderColor} ${animationClass} ${backgroundColor} ${textCol} font-bold uppercase flex items-center justify-center`}
                         onMouseEnter={()=>handleMouseOver()}
                         onMouseLeave={handleMouseOut}
-                        onClick={action(() => {store.tryAddLightning([rowIndex, colIndex])})}
+                        onClick={action((event) => {
+                          store.tryAddLightning([rowIndex, colIndex]);
+                          console.log(`Click occurred at pixel coordinates (${event.clientX}, ${event.clientY})`);
+                        })}
+                     
                         style={{ animationDelay }}
                       >
+                        
                         {letter}
                       </div>
                     );
@@ -165,15 +185,50 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
                 </div>
               </div>
             );
-          })}d
+          })}
       <button className="bg-blue-400" onClick={action(e => { store.submitCol() })}>
         Submit
       </button>
       <div></div>
       <MiniGridContainer guesses={store.boardGuesses} />
-      
+        
+          {store.lightningIDX.map(([row, col], index, arr) => {
+            console.log('lightningIDX', row, col);
+          if (index < arr.length - 1) {
+            const next = arr[index + 1];
+            // If the same column, go to the right and come from the left
+            if (next[1] === col) {
+              return (
+                <Xarrow
+                  key={`arrow-${row}-${col}`}
+                  start={`wordsGrid-${row}-${col}`}
+                  end={`wordsGrid-${next[0]}-${next[1]}`}
+                  showHead={false}
+                  startAnchor={"center"}
+                  endAnchor={"center"}
+                  path={'grid'}
+                  zIndex={100}
+                />
+              );
+            }
+            return (
+              <Xarrow
+                key={`arrow-${row}-${col}`}
+                start={`wordsGrid-${row}-${col}`}
+                end={`wordsGrid-${next[0]}-${next[1]}`}
+                showHead={false}
+                path={'grid'}
+                zIndex={100}
+              />
+            );
+          }
+          return null;
+        })}
+       
       {store.done && <EndScreen store={store} scoresList={scores} />}
+
       </div>
+      </Xwrapper>
 );
 });
 

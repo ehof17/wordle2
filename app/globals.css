@@ -245,3 +245,7 @@ body{
 .guessed-row > .guessed:nth-child(5) {
   animation-delay: 0.8s, 1.3s;
 }
+.white-circle {
+  background-color: white;
+  border-radius: 50%;
+}
