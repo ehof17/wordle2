@@ -350,6 +350,7 @@ class UltStore {
     cheatToggled = false;
     sol = new Solution();
     score = 0;
+    previousIDXs = [[-1,-1]];
     yellow2IDX = [[-1,-1]];
     red2IDX = [[-1,-1]];
     wordsGrid: string[][] = [
@@ -672,6 +673,7 @@ class UltStore {
       
     }
     saveBoardState(){
+        let IndexesToReset = [];
         const boardState = this.wordsGrid.map((row, rowIndex) => 
             row.map((letter, colIndex) => {
                 let color = 'default';
@@ -679,19 +681,24 @@ class UltStore {
                 
                 if (this.yellowIDX.some(([r, c]) => r === rowIndex && c === colIndex)) {
                     color = 'yellow';
+                    IndexesToReset.push([rowIndex, colIndex]);
                 } else if (this.orangeIDX.some(([r, c]) => r === rowIndex && c === colIndex)) {
-                    console.log('aayyOrangeTho')
                     color = 'orange';
+                    IndexesToReset.push([rowIndex, colIndex]);
                 } else if (this.red2IDX.some(([r, c]) => r === rowIndex && c === colIndex)) {
                     color = 'red';
+                    IndexesToReset.push([rowIndex, colIndex]);
                 }
         
                 return { letter, color };
             })
         );
         
-        console.log(boardState);
+        this.previousIDXs = IndexesToReset;
         this.boardGuesses.push(boardState);
+    }
+    resetPrevIndexes(){
+    this.previousIDXs = [];
     }
     handleKeyUp(e){
         const key = e.key.toLowerCase();
@@ -1134,6 +1141,7 @@ submitCol(){
     if (this.red2IDX.length < this.letterLength){
         this.saveBoardState();
         this.currentGuess++;
+
         return;
     }
     const red2IDXCopy = [...this.red2IDX];
