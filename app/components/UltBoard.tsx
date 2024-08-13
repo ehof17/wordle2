@@ -127,7 +127,7 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
                 <div className="grid guessed-row" style={{ gridTemplateColumns: "repeat(13, minmax(0, 1fr))", transform: movement, transition: 'transform .3s ease-in-out' }}>
                   {row.map((letter, colIndex) => {
                     let textCol = store.lightningIDX.some(([yRow, yCol]) => yRow === rowIndex && yCol === colIndex) 
-                      ? "text-blue-400" 
+                      ? "white-circle" 
                       : "text-white";
                     const dhb = (letter === "" || !store.lightningEnabled ) ? "" : "lens-inverse";
                     const dcs = (letter === "" || !store.lightningEnabled) ? "15px" : "50px";
@@ -163,23 +163,23 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
     
                     return (
                       <div
-                        key={`wordsGrid-${rowIndex}-${colIndex}`}
-                        id = {`wordsGrid-${rowIndex}-${colIndex}`}
-                        data-hover-behavior={dhb}
-                        data-circle-size={dcs}
-                        className={`h-8 w-8 ${borderColor} ${animationClass} ${backgroundColor} ${textCol} font-bold uppercase flex items-center justify-center`}
-                        onMouseEnter={()=>handleMouseOver()}
-                        onMouseLeave={handleMouseOut}
-                        onClick={action((event) => {
-                          store.tryAddLightning([rowIndex, colIndex]);
-                          console.log(`Click occurred at pixel coordinates (${event.clientX}, ${event.clientY})`);
-                        })}
-                     
-                        style={{ animationDelay }}
-                      >
-                        
+                      key={`wordsGrid-${rowIndex}-${colIndex}`}
+                      id = {`wordsGrid-${rowIndex}-${colIndex}`}
+                      data-hover-behavior={dhb}
+                      data-circle-size={dcs}
+                      className={`h-8 w-8 ${borderColor} ${animationClass} ${backgroundColor} ${textCol} font-bold uppercase flex items-center justify-center`}
+                      onMouseEnter={()=>handleMouseOver()}
+                      onMouseLeave={handleMouseOut}
+                      onClick={action((event) => {
+                        store.tryAddLightning([rowIndex, colIndex]);
+                        console.log(`Click occurred at pixel coordinates (${event.clientX}, ${event.clientY})`);
+                      })}
+                      style={{ animationDelay }}
+                    >
+                      <div className="bg-white rounded-full h-6 w-6 flex items-center justify-center">
                         {letter}
                       </div>
+                    </div>
                     );
                   })}
                 </div>
@@ -204,8 +204,7 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
                   start={`wordsGrid-${row}-${col}`}
                   end={`wordsGrid-${next[0]}-${next[1]}`}
                   showHead={false}
-                  startAnchor={"center"}
-                  endAnchor={"center"}
+               
                   path={'grid'}
                   zIndex={100}
                 />
@@ -217,7 +216,7 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
                 start={`wordsGrid-${row}-${col}`}
                 end={`wordsGrid-${next[0]}-${next[1]}`}
                 showHead={false}
-                path={'grid'}
+              
                 zIndex={100}
               />
             );

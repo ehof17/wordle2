@@ -696,8 +696,7 @@ class UltStore {
         this.boardGuesses.push(boardState);
     }
     handleKeyUp(e){
-        console.log("Ayo this happened")
-        console.log(e.key)
+
         const key = e.key.toLowerCase();
         this.keySequence.push(key);
         if (this.keySequence.length > this.konamiCode.length) {
@@ -712,10 +711,16 @@ class UltStore {
             this.setShowColors(false);
         }
         if (e.key === 'a'){
+            if (!this.lightningIDX.some(([r, c]) => r === this.selected)) {
             return this.moveSelection('left');
+            }
         }
         if (e.key === 'd'){
+            if (!this.lightningIDX.some(([r, c]) => r === this.selected)) {
             return this.moveSelection('right');
+            }
+            // else, add a move animation  where it cant' move
+            // move one way then back to show it can't move
         }
         if (e.key === 's'){
             return this.changeSelected('down');

@@ -246,6 +246,6 @@ body{
   animation-delay: 0.8s, 1.3s;
 }
 .white-circle {
-  background-color: white;
+  background-color: var(--bg-gray-800);
   border-radius: 50%;
 }
