@@ -2,7 +2,7 @@
   "name": "with-tailwindcss-app",
   "version": "0.1.0",
   "private": true,
-"type":"module",
+  "type": "module",
   "scripts": {
     "dev": "node server.js",
     "build": "next build",
@@ -16,6 +16,7 @@
     "@google-cloud/secret-manager": "^5.6.0",
     "express": "^4.19.2",
     "firebase": "^10.12.4",
+    "framer-motion": "^11.5.4",
     "mobx": "^6.13.0",
     "mobx-react-lite": "^4.0.7",
     "next": "14.2.5",
