@@ -29,11 +29,11 @@ const BottleFlip = () => {
 
   const finalImageOpacity2 = useTransform(scrollYProgress, [0.5, 0.8], [0, 1]);
   const finalImageOpacity3 = useTransform(scrollYProgress, [0.6, 1], [0, 1]);
-  const line1Opacity = useTransform(scrollYProgress, [0.8, .85], [0, 1]);
-  const line2Opacity = useTransform(scrollYProgress, [0.85, .9], [0, 1]);
-  const line3Opacity = useTransform(scrollYProgress, [0.9, .96], [0, 1]);
-  const line4Opacity = useTransform(scrollYProgress, [0.95, 1], [0, 1]);
-  const line5Opacity = useTransform(scrollYProgress, [0.95, 1], [0, 1]);
+  const line1Opacity = useTransform(scrollYProgress, [0.7, .85], [0, 1]);
+  const line2Opacity = useTransform(scrollYProgress, [0.7, .9], [0, 1]);
+  const line3Opacity = useTransform(scrollYProgress, [0.7, .96], [0, 1]);
+  const line4Opacity = useTransform(scrollYProgress, [0.7, 1], [0, 1]);
+  const line5Opacity = useTransform(scrollYProgress, [0.7, 1], [0, 1]);
   // Map the scroll position to control the line heights, extending to the Batman and Robin logo
   const redLineHeight = useTransform(
     scrollYProgress,
@@ -65,7 +65,7 @@ const BottleFlip = () => {
   // Fade in Batman and Robin logo at a certain scroll point
 
 
-  const redBottleBodyStyle = {
+  const redBottleBodyStyle: React.CSSProperties = {
     width: "100px",
     height: "200px",
     backgroundColor: "red", // Red bottle body
@@ -74,7 +74,7 @@ const BottleFlip = () => {
     justifyContent: "center",
     margin: "0 20px",
   };
-  const yellowBottleBodyStyle = {
+  const yellowBottleBodyStyle: React.CSSProperties = {
     width: "100px",
     height: "200px",
     backgroundColor: "yellow", // Red bottle body
@@ -85,14 +85,14 @@ const BottleFlip = () => {
   };
 
   // Styles for the triangle (cap of the ketchup bottle)
-  const redBottleCapStyle = {
+  const redBottleCapStyle: React.CSSProperties = {
     width: 0,
     height: 0,
     borderLeft: "50px solid transparent",
     borderRight: "50px solid transparent",
     borderBottom: "50px solid red", // Red triangle for cap
   };
-  const yellowBottleCapStyle = {
+  const yellowBottleCapStyle: React.CSSProperties = {
     width: 0,
     height: 0,
     borderLeft: "50px solid transparent",
@@ -107,7 +107,7 @@ const BottleFlip = () => {
     borderRadius: "50px",
     margin: "0 20px",
   };
-  const redCylinderStyle2 = {
+  const redCylinderStyle2: React.CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   flexDirection: 'column',
@@ -156,14 +156,19 @@ const BottleFlip = () => {
               justifyContent: "center"
             }}
           >
-            <motion.div style={{ ...redCylinderStyle2, rotate: rotateRed }}>
+   
+
+        
+            <motion.div style={{ rotate: rotateRed }}>
+            <div style = {{ ...redCylinderStyle2}}>
                 <div style={{...redBottleCapStyle}}></div>
                 
                 <div style = {{...redBottleBodyStyle}}>
                     <div>K</div>
                 </div>
-
+                </div>
             </motion.div>
+           
             {/* Red Line below Red Cylinder */}
             <motion.div
               style={{
@@ -182,14 +187,17 @@ const BottleFlip = () => {
               alignItems: "center",
             }}
           >
-            <motion.div style={{ ...redCylinderStyle2, rotate: rotateYellow }}>
+            
+            <motion.div style={{ rotate: rotateYellow }}>
+            <div style = {{ ...redCylinderStyle2}}>
                 <div style={{...yellowBottleCapStyle}}></div>
                 
                 <div style = {{...yellowBottleBodyStyle}}>
                     <div style = {{color: "black"}}>M</div>
                 </div>
-
+                </div>
             </motion.div>
+            
             {/* Yellow Line below Yellow Cylinder */}
             <motion.div
               style={{
