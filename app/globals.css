@@ -41,6 +41,13 @@ body {
     text-wrap: balance;
   }
 }
+html, body {
+  -webkit-overflow-scrolling: touch; /* Enables smooth scrolling on iOS devices */
+}
+
+.container {
+  -webkit-overflow-scrolling: touch;
+}
 .mouse-follow {
   position: absolute;
   top: 0;
@@ -208,9 +215,7 @@ body {
   }
 }
 
-body{
-  touch-action: none;
-}
+
 .guess-anim-green {
   animation: flip 0.5s ease forwards, colorChangeGreen 0.5s ease forwards 0.5s;
 }

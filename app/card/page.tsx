@@ -19,14 +19,14 @@ const BottleFlip = () => {
 
   const redToPink = useTransform(
     scrollYProgress,
-    [0.4, 0.7],
+    [0.3, 0.5],
     ["#ff0000", "#ffc0cb"]
   );
 
   // Opacity for the final image after the red line transitions
-  const finalImageOpacity = useTransform(scrollYProgress, [0.5, 0.6], [0, 1]);
+  const finalImageOpacity = useTransform(scrollYProgress, [0.4, 0.6], [0, 1]);
   const finalImageOpacity2 = useTransform(scrollYProgress, [0.6, 0.8], [0, 1]);
-  const finalImageOpacity3 = useTransform(scrollYProgress, [0.8, 1], [0, 1]);
+  const finalImageOpacity3 = useTransform(scrollYProgress, [0.6, .8], [0, 1]);
   const line1Opacity = useTransform(scrollYProgress, [0.8, .85], [0, 1]);
   const line2Opacity = useTransform(scrollYProgress, [0.85, .9], [0, 1]);
   const line3Opacity = useTransform(scrollYProgress, [0.9, .96], [0, 1]);
@@ -45,7 +45,7 @@ const BottleFlip = () => {
   );
   const redLineHeight2 = useTransform(
     scrollYProgress,
-    [0.4, 0.6],
+    [0.3, 0.7],
     ["0%", "130vh"]
   );
   const redLineHeight3 = useTransform(
