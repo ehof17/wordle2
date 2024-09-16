@@ -24,9 +24,11 @@ const BottleFlip = () => {
   );
 
   // Opacity for the final image after the red line transitions
-  const finalImageOpacity = useTransform(scrollYProgress, [0.4, 0.6], [0, 1]);
-  const finalImageOpacity2 = useTransform(scrollYProgress, [0.6, 0.8], [0, 1]);
-  const finalImageOpacity3 = useTransform(scrollYProgress, [0.6, .8], [0, 1]);
+  const logoOpacity = useTransform(scrollYProgress, [0.2, 0.4], [0, 1]);
+  const finalImageOpacity = useTransform(scrollYProgress, [0.4, 0.5], [0, 1]);
+
+  const finalImageOpacity2 = useTransform(scrollYProgress, [0.5, 0.8], [0, 1]);
+  const finalImageOpacity3 = useTransform(scrollYProgress, [0.6, 1], [0, 1]);
   const line1Opacity = useTransform(scrollYProgress, [0.8, .85], [0, 1]);
   const line2Opacity = useTransform(scrollYProgress, [0.85, .9], [0, 1]);
   const line3Opacity = useTransform(scrollYProgress, [0.9, .96], [0, 1]);
@@ -50,7 +52,7 @@ const BottleFlip = () => {
   );
   const redLineHeight3 = useTransform(
     scrollYProgress,
-    [0.6, 0.8],
+    [0.5, 0.8],
     ["0%", "120vh"]
   );
   const redLineHeight4 = useTransform(
@@ -61,8 +63,42 @@ const BottleFlip = () => {
 
 
   // Fade in Batman and Robin logo at a certain scroll point
-  const logoOpacity = useTransform(scrollYProgress, [0.3, 0.35], [0, 1]);
 
+
+  const redBottleBodyStyle = {
+    width: "100px",
+    height: "200px",
+    backgroundColor: "red", // Red bottle body
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    margin: "0 20px",
+  };
+  const yellowBottleBodyStyle = {
+    width: "100px",
+    height: "200px",
+    backgroundColor: "yellow", // Red bottle body
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    margin: "0 20px",
+  };
+
+  // Styles for the triangle (cap of the ketchup bottle)
+  const redBottleCapStyle = {
+    width: 0,
+    height: 0,
+    borderLeft: "50px solid transparent",
+    borderRight: "50px solid transparent",
+    borderBottom: "50px solid red", // Red triangle for cap
+  };
+  const yellowBottleCapStyle = {
+    width: 0,
+    height: 0,
+    borderLeft: "50px solid transparent",
+    borderRight: "50px solid transparent",
+    borderBottom: "50px solid yellow", // Red triangle for cap
+  };
   // Styles for the cylinders
   const redCylinderStyle = {
     width: "100px",
@@ -71,7 +107,12 @@ const BottleFlip = () => {
     borderRadius: "50px",
     margin: "0 20px",
   };
-
+  const redCylinderStyle2 = {
+  display: 'flex',
+  alignItems: 'center',
+  flexDirection: 'column',
+  justifyContent: "center"
+  };
   const yellowCylinderStyle = {
     width: "100px",
     height: "300px",
@@ -112,9 +153,17 @@ const BottleFlip = () => {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
+              justifyContent: "center"
             }}
           >
-            <motion.div style={{ ...redCylinderStyle, rotate: rotateRed }} />
+            <motion.div style={{ ...redCylinderStyle2, rotate: rotateRed }}>
+                <div style={{...redBottleCapStyle}}></div>
+                
+                <div style = {{...redBottleBodyStyle}}>
+                    <div>K</div>
+                </div>
+
+            </motion.div>
             {/* Red Line below Red Cylinder */}
             <motion.div
               style={{
@@ -133,9 +182,14 @@ const BottleFlip = () => {
               alignItems: "center",
             }}
           >
-            <motion.div
-              style={{ ...yellowCylinderStyle, rotate: rotateYellow }}
-            />
+            <motion.div style={{ ...redCylinderStyle2, rotate: rotateYellow }}>
+                <div style={{...yellowBottleCapStyle}}></div>
+                
+                <div style = {{...yellowBottleBodyStyle}}>
+                    <div style = {{color: "black"}}>M</div>
+                </div>
+
+            </motion.div>
             {/* Yellow Line below Yellow Cylinder */}
             <motion.div
               style={{
