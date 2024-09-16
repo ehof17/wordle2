@@ -5,12 +5,12 @@ import { motion, useScroll, useTransform } from "framer-motion";
 const BottleFlip = () => {
   // Get the scroll position
   const { scrollYProgress } = useScroll();
-  const fontStyles = {
-    fontFamily: "", // Use the Lobster font from Google Fonts
-    fontSize: "48px",
-    textAlign: "center",
-    color: "white", // Pink color
-    marginTop: "50px",
+  const fontStyles: React.CSSProperties = {
+    fontFamily: "'Lobster', cursive",
+    fontSize: "48px", // Ensure units are specified like "px"
+    textAlign: "center", // Use one of the allowed values like 'center'
+    color: "white",
+    marginTop: "50px", // Make sure margins use "px" or other CSS units
   };
 
   // Map the scroll position to rotation for each cylinder
