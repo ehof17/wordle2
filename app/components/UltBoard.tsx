@@ -57,7 +57,6 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
       switch (direction) {
         case 'LEFT':
           store.handleKeyUp({ key: 'a' });
-          
           break;
         case 'RIGHT':
           store.handleKeyUp({ key: 'd' });
@@ -176,7 +175,7 @@ const UltimateBoard = observer(({ store }: UltimateBoardProps) => {
                       })}
                       style={{ animationDelay }}
                     >
-                      <div className="bg-white rounded-full h-6 w-6 flex items-center justify-center">
+                      <div className=" rounded-full h-6 w-6 flex items-center justify-center">
                         {letter}
                       </div>
                     </div>
